@@ -1,28 +1,28 @@
 import '../utils/default.dart';
 
 class YearManager {
-  final int firstYear;
-  final int lastYear;
-  final int initialYear;
+  final int _firstYear;
+  final int _lastYear;
+  final int _initialYear;
 
   late final List<String> _years;
 
   YearManager({int? firstYear, int? lastYear, int? initialYear})
-      : firstYear = firstYear ?? Default.defaultFirstYear,
-        lastYear = lastYear ?? Default.defaultLastYear,
-        initialYear = initialYear ?? DateTime.now().year {
+      : _firstYear = firstYear ?? Default.defaultFirstYear,
+        _lastYear = lastYear ?? Default.defaultLastYear,
+        _initialYear = initialYear ?? DateTime.now().year {
     _years = _initializeYears;
   }
 
   factory YearManager.empty() => YearManager();
 
-  int get initialYearIndex {
-    return _years.indexOf(initialYear.toString());
+  List<String> get getYears => _years;
+
+  int get getInitialYear {
+    return _years.indexOf(_initialYear.toString());
   }
 
   List<String> get _initializeYears {
-    return List.generate((lastYear + 1) - firstYear, (y) => (firstYear + y).toString());
+    return List.generate((_lastYear + 1) - _firstYear, (y) => (_firstYear + y).toString());
   }
-
-  List<String> get getYears => _years;
 }

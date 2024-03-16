@@ -4,17 +4,21 @@ import 'package:flutter/material.dart';
 import '../constants/theme_constant.dart';
 import '../managers/month_manager.dart';
 import '../managers/year_manager.dart';
+import '../managers/day_manager.dart';
 import 'curve_scroll_wheel.dart';
 
 class CurveDatePicker extends StatelessWidget {
+  final DayManager dayManager;
   final MonthManager monthManager;
   final YearManager yearManager;
 
   CurveDatePicker({
     super.key,
+    DayManager? dayManager,
     MonthManager? monthManager,
     YearManager? yearManager,
-  })  : monthManager = monthManager ?? MonthManager.empty(),
+  })  : dayManager = dayManager ?? DayManager.empty(),
+        monthManager = monthManager ?? MonthManager.empty(),
         yearManager = yearManager ?? YearManager.empty();
 
   @override
@@ -34,22 +38,22 @@ class CurveDatePicker extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Expanded(
+              Expanded(
                 child: CurveScrollWheel(
-                  items: [],
-                  initialIndex: 0,
+                  items: dayManager.getDays,
+                  initialIndex: dayManager.getInitialDay,
                 ),
               ),
               Expanded(
                 child: CurveScrollWheel(
                   items: monthManager.getMonths,
-                  initialIndex: monthManager.getInitialMonthIndex,
+                  initialIndex: monthManager.getInitialMonth,
                 ),
               ),
               Expanded(
                 child: CurveScrollWheel(
                   items: yearManager.getYears,
-                  initialIndex: yearManager.initialYearIndex,
+                  initialIndex: yearManager.getInitialYear,
                 ),
               ),
             ],
