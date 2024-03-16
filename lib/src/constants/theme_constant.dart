@@ -8,5 +8,5 @@ const double kNotActiveItemOpacity = 0.1;
 const TextStyle kDefaultItemTextStyle = TextStyle(
   color: Colors.white,
   fontWeight: FontWeight.bold,
-  fontSize: 32.0,
+  fontSize: 28.0,
 );

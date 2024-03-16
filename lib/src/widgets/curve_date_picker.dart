@@ -1,16 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../constants/theme_constant.dart';
+import '../managers/month_manager.dart';
 import '../managers/year_manager.dart';
 import 'curve_scroll_wheel.dart';
 
 class CurveDatePicker extends StatelessWidget {
+  final MonthManager monthManager;
   final YearManager yearManager;
 
   CurveDatePicker({
     super.key,
+    MonthManager? monthManager,
     YearManager? yearManager,
-  }) : yearManager = yearManager ?? YearManager.empty();
+  })  : monthManager = monthManager ?? MonthManager.empty(),
+        yearManager = yearManager ?? YearManager.empty();
 
   @override
   Widget build(BuildContext context) {
@@ -25,26 +30,26 @@ class CurveDatePicker extends StatelessWidget {
           ),
         ),
         SizedBox(
-          height: MediaQuery.of(context).size.height / 2,
+          height: kDefaultWheelPickerHeight,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Expanded(
                 child: CurveScrollWheel(
                   items: [],
-                  initialYearIndex: 0,
+                  initialIndex: 0,
                 ),
               ),
-              const Expanded(
+              Expanded(
                 child: CurveScrollWheel(
-                  items: [],
-                  initialYearIndex: 0,
+                  items: monthManager.getMonths,
+                  initialIndex: monthManager.getInitialMonthIndex,
                 ),
               ),
               Expanded(
                 child: CurveScrollWheel(
                   items: yearManager.getYears,
-                  initialYearIndex: yearManager.initialYearIndex,
+                  initialIndex: yearManager.initialYearIndex,
                 ),
               ),
             ],

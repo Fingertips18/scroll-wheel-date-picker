@@ -4,12 +4,12 @@ import '../constants/theme_constant.dart';
 
 class CurveScrollWheel extends StatefulWidget {
   final List<String> items;
-  final int initialYearIndex;
+  final int initialIndex;
 
   const CurveScrollWheel({
     super.key,
     required this.items,
-    required this.initialYearIndex,
+    required this.initialIndex,
   });
 
   @override
@@ -23,7 +23,7 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
   void initState() {
     super.initState();
 
-    _controller = FixedExtentScrollController(initialItem: widget.initialYearIndex);
+    _controller = FixedExtentScrollController(initialItem: widget.initialIndex);
   }
 
   @override
@@ -35,26 +35,26 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: kDefaultWheelPickerHeight,
-      child: ListWheelScrollView.useDelegate(
-        controller: _controller,
-        physics: const FixedExtentScrollPhysics(),
-        diameterRatio: kDefaultDiameterRatio,
-        itemExtent: kDefaultItemHeight,
-        overAndUnderCenterOpacity: kNotActiveItemOpacity,
-        childDelegate: ListWheelChildBuilderDelegate(
-          childCount: widget.items.length,
-          builder: (context, index) {
-            return Align(
-              alignment: Alignment.center,
+    return ListWheelScrollView.useDelegate(
+      controller: _controller,
+      physics: const FixedExtentScrollPhysics(),
+      diameterRatio: kDefaultDiameterRatio,
+      itemExtent: kDefaultItemHeight,
+      overAndUnderCenterOpacity: kNotActiveItemOpacity,
+      childDelegate: ListWheelChildBuilderDelegate(
+        childCount: widget.items.length,
+        builder: (context, index) {
+          return Align(
+            alignment: Alignment.center,
+            child: FittedBox(
+              fit: BoxFit.contain,
               child: Text(
                 widget.items[index],
                 style: kDefaultItemTextStyle,
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }
