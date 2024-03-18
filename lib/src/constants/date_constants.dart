@@ -25,3 +25,5 @@ enum MonthFormat {
   threeLetter,
   twoLetter,
 }
+
+const int kFirstYear = 1900;

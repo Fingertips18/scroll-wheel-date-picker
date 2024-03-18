@@ -2,24 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/theme_constant.dart';
-import '../managers/month_manager.dart';
-import '../managers/year_manager.dart';
-import '../managers/day_manager.dart';
+import '../managers/date_manager.dart';
 import 'curve_scroll_wheel.dart';
 
 class CurveDatePicker extends StatelessWidget {
-  final DayManager dayManager;
-  final MonthManager monthManager;
-  final YearManager yearManager;
+  final DateManager dateManager;
 
   CurveDatePicker({
     super.key,
-    DayManager? dayManager,
-    MonthManager? monthManager,
-    YearManager? yearManager,
-  })  : dayManager = dayManager ?? DayManager.empty(),
-        monthManager = monthManager ?? MonthManager.empty(),
-        yearManager = yearManager ?? YearManager.empty();
+    DateManager? dateManager,
+  }) : dateManager = dateManager ?? DateManager.empty();
 
   @override
   Widget build(BuildContext context) {
@@ -38,22 +30,35 @@ class CurveDatePicker extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              // Days
               Expanded(
-                child: CurveScrollWheel(
-                  items: dayManager.getDays,
-                  initialIndex: dayManager.getInitialDay,
+                child: ListenableBuilder(
+                  listenable: dateManager,
+                  builder: (context, child) {
+                    return CurveScrollWheel(
+                      items: dateManager.getDayManager.getDays,
+                      currentIndex: dateManager.getDayManager.getCurrentDay,
+                      onSelectedItemChanged: (value) => dateManager.changeDay(day: value),
+                    );
+                  },
                 ),
               ),
+
+              // Months
               Expanded(
                 child: CurveScrollWheel(
-                  items: monthManager.getMonths,
-                  initialIndex: monthManager.getInitialMonth,
+                  items: dateManager.getMonthManager.getMonths,
+                  currentIndex: dateManager.getMonthManager.getCurrentMonth,
+                  onSelectedItemChanged: (value) => dateManager.changeMonth(month: value),
                 ),
               ),
+
+              //Years
               Expanded(
                 child: CurveScrollWheel(
-                  items: yearManager.getYears,
-                  initialIndex: yearManager.getInitialYear,
+                  items: dateManager.getYearManager.getYears,
+                  currentIndex: dateManager.getYearManager.getCurrentYear,
+                  onSelectedItemChanged: (value) => dateManager.changeYear(year: value),
                 ),
               ),
             ],

@@ -4,12 +4,14 @@ import '../constants/theme_constant.dart';
 
 class CurveScrollWheel extends StatefulWidget {
   final List<String> items;
-  final int initialIndex;
+  final int currentIndex;
+  final Function(int)? onSelectedItemChanged;
 
   const CurveScrollWheel({
     super.key,
     required this.items,
-    required this.initialIndex,
+    required this.currentIndex,
+    this.onSelectedItemChanged,
   });
 
   @override
@@ -23,7 +25,7 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
   void initState() {
     super.initState();
 
-    _controller = FixedExtentScrollController(initialItem: widget.initialIndex);
+    _controller = FixedExtentScrollController(initialItem: widget.currentIndex);
   }
 
   @override
@@ -41,6 +43,7 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
       diameterRatio: kDefaultDiameterRatio,
       itemExtent: kDefaultItemHeight,
       overAndUnderCenterOpacity: kNotActiveItemOpacity,
+      onSelectedItemChanged: widget.onSelectedItemChanged,
       childDelegate: ListWheelChildBuilderDelegate(
         childCount: widget.items.length,
         builder: (context, index) {

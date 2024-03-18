@@ -1,25 +1,43 @@
+import '../utils/helper.dart';
+
 class DayManager {
-  final int _initialDay;
-  late final int _lastDay;
+  final int _currentDay;
+  final int _numberOfDays;
+  final List<String> _days;
 
-  late final List<String> _days;
-
-  DayManager({int? initialDay, int? lastDay}) : _initialDay = initialDay ?? DateTime.now().day {
-    _lastDay = lastDay ?? _getInitialLastDay;
-    _days = _initializeDays;
-  }
+  const DayManager._({
+    required int currentDay,
+    required int numberOfDays,
+    required List<String> days,
+  })  : _days = days,
+        _numberOfDays = numberOfDays,
+        _currentDay = currentDay;
 
   factory DayManager.empty() => DayManager();
 
-  int get getInitialDay => _initialDay - 1;
-
+  int get getCurrentDay => _currentDay;
+  int get getNumberOfDays => _numberOfDays;
   List<String> get getDays => _days;
 
-  int get _getInitialLastDay {
-    return DateTime(DateTime.now().year, DateTime.now().month + 1, 0).day;
+  factory DayManager({int? currentDay, int? numberOfDays}) {
+    final List<String> days = List.generate(
+      numberOfDays ?? Helper.getNumberOfDays(year: DateTime.now().year, month: DateTime.now().month),
+      (i) => (i + 1).toString(),
+    );
+
+    return DayManager._(
+      currentDay: (currentDay ?? DateTime.now().day) - 1,
+      numberOfDays: days.length,
+      days: days,
+    );
   }
 
-  List<String> get _initializeDays {
-    return List.generate(_lastDay, (i) => (i + 1).toString());
-  }
+  DayManager copyWith({
+    int? currentDay,
+    int? numberOfDays,
+  }) =>
+      DayManager(
+        currentDay: currentDay ?? _currentDay,
+        numberOfDays: numberOfDays ?? _numberOfDays,
+      );
 }
