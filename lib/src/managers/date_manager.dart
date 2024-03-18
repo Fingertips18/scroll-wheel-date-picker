@@ -12,7 +12,7 @@ class DateManager with ChangeNotifier {
 
   DateManager({
     DateTime? initialDate,
-    DateTime? firstDate,
+    DateTime? startDate,
     DateTime? lastDate,
   })  : _dayManager = DayManager(
             currentDay: initialDate?.day,
@@ -21,7 +21,7 @@ class DateManager with ChangeNotifier {
               month: initialDate?.month ?? DateTime.now().month,
             )),
         _monthManager = MonthManager(currentMonth: initialDate?.month),
-        _yearManager = YearManager(currentYear: initialDate?.year, startYear: firstDate?.year, lastYear: lastDate?.year);
+        _yearManager = YearManager(currentYear: initialDate?.year, startYear: startDate?.year, lastYear: lastDate?.year);
 
   factory DateManager.empty() => DateManager();
 
@@ -44,7 +44,10 @@ class DateManager with ChangeNotifier {
   }
 
   void updateNumberOfDays() {
-    _dayManager = _dayManager.copyWith(numberOfDays: Helper.getNumberOfDays(year: _yearManager.getCurrentYear, month: _monthManager.getCurrentMonth));
+    final int numberOfDays = Helper.getNumberOfDays(year: _yearManager.getCurrentYear, month: _monthManager.getCurrentMonth);
+
+    _dayManager = _dayManager.copyWith(numberOfDays: numberOfDays);
+
     notifyListeners();
   }
 }

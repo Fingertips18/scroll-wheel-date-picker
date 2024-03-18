@@ -7,10 +7,16 @@ import 'curve_scroll_wheel.dart';
 
 class CurveDatePicker extends StatelessWidget {
   final DateManager dateManager;
+  final bool loopDays;
+  final bool loopMonths;
+  final bool loopYears;
 
   CurveDatePicker({
     super.key,
     DateManager? dateManager,
+    this.loopDays = true,
+    this.loopMonths = true,
+    this.loopYears = true,
   }) : dateManager = dateManager ?? DateManager.empty();
 
   @override
@@ -37,8 +43,9 @@ class CurveDatePicker extends StatelessWidget {
                   builder: (context, child) {
                     return CurveScrollWheel(
                       items: dateManager.getDayManager.getDays,
-                      currentIndex: dateManager.getDayManager.getCurrentDay,
+                      initialIndex: dateManager.getDayManager.getCurrentDay,
                       onSelectedItemChanged: (value) => dateManager.changeDay(day: value),
+                      looping: loopDays,
                     );
                   },
                 ),
@@ -48,8 +55,9 @@ class CurveDatePicker extends StatelessWidget {
               Expanded(
                 child: CurveScrollWheel(
                   items: dateManager.getMonthManager.getMonths,
-                  currentIndex: dateManager.getMonthManager.getCurrentMonth,
+                  initialIndex: dateManager.getMonthManager.getCurrentMonth,
                   onSelectedItemChanged: (value) => dateManager.changeMonth(month: value),
+                  looping: loopMonths,
                 ),
               ),
 
@@ -57,8 +65,9 @@ class CurveDatePicker extends StatelessWidget {
               Expanded(
                 child: CurveScrollWheel(
                   items: dateManager.getYearManager.getYears,
-                  currentIndex: dateManager.getYearManager.getCurrentYear,
+                  initialIndex: dateManager.getYearManager.getCurrentYear,
                   onSelectedItemChanged: (value) => dateManager.changeYear(year: value),
+                  looping: loopYears,
                 ),
               ),
             ],
