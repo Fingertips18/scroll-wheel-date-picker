@@ -43,7 +43,7 @@ class CurveDatePicker extends StatelessWidget {
                   builder: (context, child) {
                     return CurveScrollWheel(
                       items: dateManager.getDayManager.getDays,
-                      initialIndex: dateManager.getDayManager.getCurrentDay,
+                      selectedIndex: dateManager.getDayManager.getSelectedIndex,
                       onSelectedItemChanged: (value) => dateManager.changeDay(day: value),
                       looping: loopDays,
                     );
@@ -55,7 +55,7 @@ class CurveDatePicker extends StatelessWidget {
               Expanded(
                 child: CurveScrollWheel(
                   items: dateManager.getMonthManager.getMonths,
-                  initialIndex: dateManager.getMonthManager.getCurrentMonth,
+                  selectedIndex: dateManager.getMonthManager.getSelectedIndex,
                   onSelectedItemChanged: (value) => dateManager.changeMonth(month: value),
                   looping: loopMonths,
                 ),
@@ -65,7 +65,7 @@ class CurveDatePicker extends StatelessWidget {
               Expanded(
                 child: CurveScrollWheel(
                   items: dateManager.getYearManager.getYears,
-                  initialIndex: dateManager.getYearManager.getCurrentYear,
+                  selectedIndex: dateManager.getYearManager.getSelectedIndex,
                   onSelectedItemChanged: (value) => dateManager.changeYear(year: value),
                   looping: loopYears,
                 ),

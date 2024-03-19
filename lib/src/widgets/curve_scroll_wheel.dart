@@ -4,14 +4,14 @@ import '../constants/theme_constant.dart';
 
 class CurveScrollWheel extends StatefulWidget {
   final List<String> items;
-  final int initialIndex;
+  final int selectedIndex;
   final Function(int value)? onSelectedItemChanged;
   final bool looping;
 
   const CurveScrollWheel({
     super.key,
     required this.items,
-    required this.initialIndex,
+    required this.selectedIndex,
     this.onSelectedItemChanged,
     required this.looping,
   });
@@ -27,7 +27,7 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
   void initState() {
     super.initState();
 
-    _controller = FixedExtentScrollController(initialItem: widget.initialIndex);
+    _controller = FixedExtentScrollController(initialItem: widget.selectedIndex);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.position.isScrollingNotifier.addListener(() {
@@ -44,12 +44,8 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
   void didUpdateWidget(covariant CurveScrollWheel oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.initialIndex != widget.initialIndex) {
-      _controller.animateToItem(
-        widget.initialIndex,
-        duration: Durations.medium2,
-        curve: Curves.fastLinearToSlowEaseIn,
-      );
+    if (oldWidget.selectedIndex != widget.selectedIndex) {
+      _controller.jumpToItem(widget.selectedIndex);
     }
   }
 

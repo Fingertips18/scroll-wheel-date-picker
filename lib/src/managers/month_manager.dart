@@ -4,43 +4,43 @@ import '../constants/date_constants.dart';
 
 class MonthManager {
   final MonthFormat _monthFormat;
-  final int _currentMonth;
+  final int _selectedIndex;
   final List<String> _months;
 
   const MonthManager._({
     required MonthFormat monthFormat,
-    required int currentMonth,
+    required int selectedIndex,
     required List<String> months,
   })  : _monthFormat = monthFormat,
-        _currentMonth = currentMonth,
+        _selectedIndex = selectedIndex,
         _months = months;
 
   factory MonthManager.empty() => MonthManager();
 
   factory MonthManager({
     MonthFormat? monthFormat,
-    int? currentMonth,
+    int? selectedIndex,
   }) {
     final MonthFormat format = monthFormat ?? MonthFormat.full;
 
     return MonthManager._(
       monthFormat: format,
-      currentMonth: currentMonth ?? DateTime.now().month - 1,
+      selectedIndex: selectedIndex ?? DateTime.now().month - 1,
       months: generateMonths(format),
     );
   }
 
   MonthFormat get getFormat => _monthFormat;
-  int get getCurrentMonth => _currentMonth;
+  int get getSelectedIndex => _selectedIndex;
   List<String> get getMonths => _months;
 
   MonthManager copyWith({
     MonthFormat? monthFormat,
-    int? currentMonth,
+    int? selectedIndex,
   }) =>
       MonthManager(
         monthFormat: monthFormat ?? _monthFormat,
-        currentMonth: currentMonth ?? _currentMonth,
+        selectedIndex: selectedIndex ?? _selectedIndex,
       );
 }
 

@@ -15,13 +15,13 @@ class DateManager with ChangeNotifier {
     DateTime? startDate,
     DateTime? lastDate,
   })  : _dayManager = DayManager(
-            currentDay: initialDate?.day,
+            selectedIndex: initialDate?.day,
             numberOfDays: Helper.getNumberOfDays(
               year: initialDate?.year ?? DateTime.now().year,
               month: initialDate?.month ?? DateTime.now().month,
             )),
-        _monthManager = MonthManager(currentMonth: initialDate?.month),
-        _yearManager = YearManager(currentYear: initialDate?.year, startYear: startDate?.year, lastYear: lastDate?.year);
+        _monthManager = MonthManager(selectedIndex: initialDate?.month),
+        _yearManager = YearManager(selectedIndex: initialDate?.year, startYear: startDate?.year, lastYear: lastDate?.year);
 
   factory DateManager.empty() => DateManager();
 
@@ -30,21 +30,21 @@ class DateManager with ChangeNotifier {
   YearManager get getYearManager => _yearManager;
 
   void changeDay({required int day}) {
-    _dayManager = _dayManager.copyWith(currentDay: day);
+    _dayManager = _dayManager.copyWith(selectedIndex: day);
   }
 
   void changeMonth({required int month}) {
-    _monthManager = _monthManager.copyWith(currentMonth: month);
+    _monthManager = _monthManager.copyWith(selectedIndex: month);
     updateNumberOfDays();
   }
 
   void changeYear({required int year}) {
-    _yearManager = _yearManager.copyWith(currentYear: year);
+    _yearManager = _yearManager.copyWith(selectedIndex: year);
     updateNumberOfDays();
   }
 
   void updateNumberOfDays() {
-    final int numberOfDays = Helper.getNumberOfDays(year: _yearManager.getCurrentYear, month: _monthManager.getCurrentMonth);
+    final int numberOfDays = Helper.getNumberOfDays(year: _yearManager.getSelectedIndex, month: _monthManager.getSelectedIndex);
 
     _dayManager = _dayManager.copyWith(numberOfDays: numberOfDays);
 
