@@ -28,6 +28,16 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
     super.initState();
 
     _controller = FixedExtentScrollController(initialItem: widget.initialIndex);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _controller.position.isScrollingNotifier.addListener(() {
+        if (!_controller.position.isScrollingNotifier.value) {
+          if (widget.onSelectedItemChanged != null) {
+            widget.onSelectedItemChanged!(_controller.selectedItem % widget.items.length);
+          }
+        }
+      });
+    });
   }
 
   @override
@@ -35,7 +45,11 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.initialIndex != widget.initialIndex) {
-      _controller.jumpToItem(widget.initialIndex);
+      _controller.animateToItem(
+        widget.initialIndex,
+        duration: Durations.medium2,
+        curve: Curves.fastLinearToSlowEaseIn,
+      );
     }
   }
 
@@ -54,7 +68,6 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
       diameterRatio: kDefaultDiameterRatio,
       itemExtent: kDefaultItemHeight,
       overAndUnderCenterOpacity: kNotActiveItemOpacity,
-      onSelectedItemChanged: widget.onSelectedItemChanged,
       childDelegate: widget.looping
           ? ListWheelChildLoopingListDelegate(
               children: List.generate(

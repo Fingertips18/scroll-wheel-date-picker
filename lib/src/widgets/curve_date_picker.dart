@@ -16,7 +16,7 @@ class CurveDatePicker extends StatelessWidget {
     DateManager? dateManager,
     this.loopDays = true,
     this.loopMonths = true,
-    this.loopYears = true,
+    this.loopYears = false,
   }) : dateManager = dateManager ?? DateManager.empty();
 
   @override

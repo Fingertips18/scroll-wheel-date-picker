@@ -22,8 +22,9 @@ enum Month {
 
 enum MonthFormat {
   full,
-  threeLetter,
-  twoLetter,
+  threeLetters,
+  twoLetters,
 }
 
-const int kFirstYear = 1900;
+const String kStartDate = "1900-01-01 00:00:00";
+const String kLastDate = "2100-12-31 23:59:59";

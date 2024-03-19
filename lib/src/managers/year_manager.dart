@@ -1,4 +1,4 @@
-import '../utils/default.dart';
+import 'package:wheel_date_picker/src/constants/date_constants.dart';
 
 class YearManager {
   final int _currentYear;
@@ -28,8 +28,8 @@ class YearManager {
     int? lastYear,
     int? currentYear,
   }) {
-    final int start = startYear ?? Default.startDate.year;
-    final int last = lastYear ?? Default.lastDate.year;
+    final int start = startYear ?? DateTime.parse(kStartDate).year;
+    final int last = lastYear ?? DateTime.parse(kLastDate).year;
 
     return YearManager._(
       currentYear: currentYear ?? DateTime.now().year,

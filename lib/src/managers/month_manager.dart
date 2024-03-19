@@ -46,9 +46,9 @@ class MonthManager {
 
 List<String> generateMonths(MonthFormat monthFormat) {
   switch (monthFormat) {
-    case MonthFormat.threeLetter:
+    case MonthFormat.threeLetters:
       return List.generate(Month.values.length, (i) => Month.values[i].threeAbv.capitalize);
-    case MonthFormat.twoLetter:
+    case MonthFormat.twoLetters:
       return List.generate(Month.values.length, (i) => Month.values[i].twoAbv.capitalize);
     default:
       return List.generate(Month.values.length, (i) => Month.values[i].name.capitalize);
