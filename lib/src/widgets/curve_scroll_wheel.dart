@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../constants/theme_constant.dart';
+import 'scroll_item.dart';
 
 class CurveScrollWheel extends StatefulWidget {
   final List<String> items;
@@ -69,15 +70,8 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
               children: List.generate(
                 widget.items.length,
                 (i) {
-                  return Align(
-                    alignment: Alignment.center,
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: Text(
-                        widget.items[i],
-                        style: kDefaultItemTextStyle,
-                      ),
-                    ),
+                  return ScrollItem(
+                    label: widget.items[i],
                   );
                 },
               ),
@@ -85,15 +79,8 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
           : ListWheelChildBuilderDelegate(
               childCount: widget.items.length,
               builder: (_, index) {
-                return Align(
-                  alignment: Alignment.center,
-                  child: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Text(
-                      widget.items[index],
-                      style: kDefaultItemTextStyle,
-                    ),
-                  ),
+                return ScrollItem(
+                  label: widget.items[index],
                 );
               },
             ),

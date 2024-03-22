@@ -1,12 +1,18 @@
 import 'package:wheel_date_picker/src/constants/date_constants.dart';
 
-class YearManager {
+import 'icontroller.dart';
+
+List<String> generateYears({required int startYear, required int lastYear}) {
+  return List.generate((lastYear + 1) - startYear, (i) => (startYear + i).toString());
+}
+
+class YearController implements IController {
   final int _selectedIndex;
   final int _startYear;
   final int _lastYear;
   final List<String> _years;
 
-  YearManager._({
+  YearController._({
     required int selectedIndex,
     required int startYear,
     required int lastYear,
@@ -16,14 +22,16 @@ class YearManager {
         _lastYear = lastYear,
         _years = years;
 
-  factory YearManager.empty() => YearManager();
+  factory YearController.empty() => YearController();
 
+  @override
   int get getSelectedIndex => _selectedIndex;
   int get getStartYear => _startYear;
   int get getLastYear => _lastYear;
-  List<String> get getYears => _years;
+  @override
+  List<String> get getItems => _years;
 
-  factory YearManager({
+  factory YearController({
     int? startYear,
     int? lastYear,
     int? selectedIndex,
@@ -33,7 +41,7 @@ class YearManager {
 
     final generatedYears = generateYears(startYear: start, lastYear: last);
 
-    return YearManager._(
+    return YearController._(
       selectedIndex: selectedIndex ?? generatedYears.indexOf(DateTime.now().year.toString()),
       startYear: start,
       lastYear: last,
@@ -41,18 +49,15 @@ class YearManager {
     );
   }
 
-  YearManager copyWith({
+  @override
+  YearController copyWith({
     int? selectedIndex,
     int? startYear,
     int? lastYear,
   }) =>
-      YearManager(
+      YearController(
         selectedIndex: selectedIndex ?? _selectedIndex,
         startYear: startYear ?? _startYear,
         lastYear: lastYear ?? _lastYear,
       );
-}
-
-List<String> generateYears({required int startYear, required int lastYear}) {
-  return List.generate((lastYear + 1) - startYear, (i) => (startYear + i).toString());
 }

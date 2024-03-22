@@ -8,5 +8,12 @@ const double kNotActiveItemOpacity = 0.1;
 const TextStyle kDefaultItemTextStyle = TextStyle(
   color: Colors.white,
   fontWeight: FontWeight.bold,
-  fontSize: 28.0,
+  fontSize: 24.0,
 );
+
+enum ScrollWheel {
+  curve,
+  flat,
+}
+
+const ScrollWheel kdefaultScrollWheel = ScrollWheel.curve;

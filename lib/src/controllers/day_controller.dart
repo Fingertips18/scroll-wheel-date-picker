@@ -1,11 +1,16 @@
 import '../utils/helper.dart';
+import 'icontroller.dart';
 
-class DayManager {
+List<String> generateDays({required int numberOfDays}) {
+  return List.generate(numberOfDays, (i) => (i + 1).toString());
+}
+
+class DayController implements IController {
   final int _selectedIndex;
   final int _numberOfDays;
   final List<String> _days;
 
-  const DayManager._({
+  const DayController._({
     required int selectedIndex,
     required int numberOfDays,
     required List<String> days,
@@ -13,34 +18,33 @@ class DayManager {
         _numberOfDays = numberOfDays,
         _days = days;
 
-  factory DayManager.empty() => DayManager();
+  factory DayController.empty() => DayController();
 
+  @override
   int get getSelectedIndex => _days.indexOf((_selectedIndex + 1).toString());
   int get getNumberOfDays => _numberOfDays;
-  List<String> get getDays => _days;
+  @override
+  List<String> get getItems => _days;
 
-  factory DayManager({int? selectedIndex, int? numberOfDays}) {
+  factory DayController({int? selectedIndex, int? numberOfDays}) {
     final List<String> days = generateDays(
-      daysCount: numberOfDays ?? Helper.getNumberOfDays(year: DateTime.now().year, month: DateTime.now().month),
+      numberOfDays: numberOfDays ?? Helper.getNumberOfDays(year: DateTime.now().year, month: DateTime.now().month),
     );
 
-    return DayManager._(
+    return DayController._(
       selectedIndex: selectedIndex ?? DateTime.now().day - 1,
       numberOfDays: days.length,
       days: days,
     );
   }
 
-  DayManager copyWith({
+  @override
+  DayController copyWith({
     int? selectedIndex,
     int? numberOfDays,
   }) =>
-      DayManager(
+      DayController(
         selectedIndex: selectedIndex ?? _selectedIndex,
         numberOfDays: numberOfDays ?? _numberOfDays,
       );
-}
-
-List<String> generateDays({required int daysCount}) {
-  return List.generate(daysCount, (i) => (i + 1).toString());
 }
