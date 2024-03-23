@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:wheel_date_picker/src/utils/extensions.dart';
 import '../constants/date_constants.dart';
-import '../utils/helper.dart';
 import 'icontroller.dart';
 
 class DateController with ChangeNotifier {
@@ -16,7 +14,7 @@ class DateController with ChangeNotifier {
     DateTime? lastDate,
   })  : _dayController = _DayController(
             selectedIndex: initialDate?.day,
-            numberOfDays: Helper.getNumberOfDays(
+            numberOfDays: _getNumberOfDays(
               year: initialDate?.year ?? DateTime.now().year,
               month: initialDate?.month ?? DateTime.now().month,
             )),
@@ -44,16 +42,12 @@ class DateController with ChangeNotifier {
   }
 
   void _updateNumberOfDays() {
-    final int numberOfDays = Helper.getNumberOfDays(year: _yearController.getSelectedIndex, month: _monthController.getSelectedIndex);
+    final int numberOfDays = _getNumberOfDays(year: _yearController.selectedIndex, month: _monthController.selectedIndex);
 
     _dayController = _dayController.copyWith(numberOfDays: numberOfDays);
 
     notifyListeners();
   }
-}
-
-List<String> _generateDays({required int numberOfDays}) {
-  return List.generate(numberOfDays, (i) => (i + 1).toString());
 }
 
 class _DayController implements IController {
@@ -70,14 +64,14 @@ class _DayController implements IController {
         _days = days;
 
   @override
-  int get getSelectedIndex => _days.indexOf((_selectedIndex + 1).toString());
-  int get getNumberOfDays => _numberOfDays;
+  int get selectedIndex => _days.indexOf((_selectedIndex + 1).toString());
+  int get numberOfDays => _numberOfDays;
   @override
-  List<String> get getItems => _days;
+  List<String> get items => _days;
 
   factory _DayController({int? selectedIndex, int? numberOfDays}) {
     final List<String> days = _generateDays(
-      numberOfDays: numberOfDays ?? Helper.getNumberOfDays(year: DateTime.now().year, month: DateTime.now().month),
+      numberOfDays: numberOfDays ?? _getNumberOfDays(year: DateTime.now().year, month: DateTime.now().month),
     );
 
     return _DayController._(
@@ -96,17 +90,6 @@ class _DayController implements IController {
         selectedIndex: selectedIndex ?? _selectedIndex,
         numberOfDays: numberOfDays ?? _numberOfDays,
       );
-}
-
-List<String> _generateMonths(MonthFormat monthFormat) {
-  switch (monthFormat) {
-    case MonthFormat.threeLetters:
-      return List.generate(Month.values.length, (i) => Month.values[i].threeAbv.capitalize);
-    case MonthFormat.twoLetters:
-      return List.generate(Month.values.length, (i) => Month.values[i].twoAbv.capitalize);
-    default:
-      return List.generate(Month.values.length, (i) => Month.values[i].name.capitalize);
-  }
 }
 
 class _MonthController implements IController {
@@ -135,11 +118,11 @@ class _MonthController implements IController {
     );
   }
 
-  MonthFormat get getFormat => _monthFormat;
+  MonthFormat get monthFormat => _monthFormat;
   @override
-  int get getSelectedIndex => _selectedIndex;
+  int get selectedIndex => _selectedIndex;
   @override
-  List<String> get getItems => _months;
+  List<String> get items => _months;
 
   @override
   _MonthController copyWith({
@@ -150,10 +133,6 @@ class _MonthController implements IController {
         monthFormat: monthFormat ?? _monthFormat,
         selectedIndex: selectedIndex ?? _selectedIndex,
       );
-}
-
-List<String> _generateYears({required int startYear, required int lastYear}) {
-  return List.generate((lastYear + 1) - startYear, (i) => (startYear + i).toString());
 }
 
 class _YearController implements IController {
@@ -173,11 +152,11 @@ class _YearController implements IController {
         _years = years;
 
   @override
-  int get getSelectedIndex => _selectedIndex;
-  int get getStartYear => _startYear;
-  int get getLastYear => _lastYear;
+  int get selectedIndex => _selectedIndex;
+  int get startYear => _startYear;
+  int get lastYear => _lastYear;
   @override
-  List<String> get getItems => _years;
+  List<String> get items => _years;
 
   factory _YearController({
     int? startYear,
@@ -208,4 +187,39 @@ class _YearController implements IController {
         startYear: startYear ?? _startYear,
         lastYear: lastYear ?? _lastYear,
       );
+}
+
+int _getNumberOfDays({required int year, required int month}) {
+  bool isLeapYear = false;
+
+  if (month + 1 == DateTime.february) {
+    isLeapYear = ((year % 4 == 0) && (year % 100 != 0)) || year % 400 == 0;
+  }
+
+  final List<int> daysInMonths = [31, isLeapYear ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+  return daysInMonths[month];
+}
+
+List<String> _generateDays({required int numberOfDays}) {
+  return List.generate(numberOfDays, (i) => (i + 1).toString());
+}
+
+List<String> _generateMonths(MonthFormat monthFormat) {
+  switch (monthFormat) {
+    case MonthFormat.threeLetters:
+      return List.generate(Month.values.length, (i) => _capitalize(Month.values[i].threeAbv));
+    case MonthFormat.twoLetters:
+      return List.generate(Month.values.length, (i) => _capitalize(Month.values[i].twoAbv));
+    default:
+      return List.generate(Month.values.length, (i) => _capitalize(Month.values[i].name));
+  }
+}
+
+List<String> _generateYears({required int startYear, required int lastYear}) {
+  return List.generate((lastYear + 1) - startYear, (i) => (startYear + i).toString());
+}
+
+String _capitalize(String s) {
+  return "${s[0].toUpperCase()}${s.substring(1).toLowerCase()}";
 }

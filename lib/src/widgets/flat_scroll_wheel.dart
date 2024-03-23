@@ -1,6 +1,6 @@
-import 'package:infinite_carousel/infinite_carousel.dart';
 import 'package:flutter/material.dart';
 
+import '../controllers/flat_scroll_wheel_view.dart';
 import '../constants/theme_constant.dart';
 import 'scroll_item.dart';
 
@@ -23,22 +23,19 @@ class FlatScrollWheel extends StatefulWidget {
 }
 
 class _FlatScrollWheelState extends State<FlatScrollWheel> {
-  late final InfiniteScrollController _scrollController;
-  late int _currentIndex;
+  late final FlatScrollController _controller;
 
   @override
   void initState() {
     super.initState();
 
-    _scrollController = InfiniteScrollController(initialItem: widget.selectedIndex);
-
-    _currentIndex = widget.selectedIndex;
+    _controller = FlatScrollController(initialItem: widget.selectedIndex);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollController.position.isScrollingNotifier.addListener(() {
-        if (!_scrollController.position.isScrollingNotifier.value) {
+      _controller.position.isScrollingNotifier.addListener(() {
+        if (!_controller.position.isScrollingNotifier.value) {
           if (widget.onIndexChanged != null) {
-            widget.onIndexChanged!(_scrollController.selectedItem % widget.items.length);
+            widget.onIndexChanged!(_controller.selectedItem % widget.items.length);
           }
         }
       });
@@ -50,38 +47,27 @@ class _FlatScrollWheelState extends State<FlatScrollWheel> {
     super.didUpdateWidget(oldWidget);
 
     if (oldWidget.selectedIndex != widget.selectedIndex) {
-      _scrollController.jumpToItem(widget.selectedIndex);
+      _controller.jumpToItem(widget.selectedIndex);
     }
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _controller.dispose();
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return InfiniteCarousel.builder(
-      controller: _scrollController,
-      itemCount: widget.items.length,
+    return FlatScrollWheelView(
+      controller: _controller,
+      physics: const FlatScrollPhysics(),
       itemExtent: kDefaultItemHeight,
-      axisDirection: Axis.vertical,
-      loop: widget.looping,
-      physics: const InfiniteScrollPhysics(),
-      velocityFactor: 1.0,
-      onIndexChanged: (index) {
-        setState(() {
-          _currentIndex = index;
-        });
-      },
-      itemBuilder: (__, itemIndex, _) {
-        return AnimatedOpacity(
-          opacity: itemIndex == _currentIndex ? 1.0 : kNotActiveItemOpacity,
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.ease,
-          child: ScrollItem(label: widget.items[itemIndex]),
+      itemCount: widget.items.length,
+      itemBuilder: (context, itemIndex) {
+        return ScrollItem(
+          label: widget.items[itemIndex],
         );
       },
     );

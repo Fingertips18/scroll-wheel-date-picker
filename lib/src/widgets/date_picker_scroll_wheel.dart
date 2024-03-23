@@ -30,14 +30,14 @@ class DatePickerScrollWheel extends StatelessWidget {
   }) {
     return scrollWheel == ScrollWheel.curve
         ? CurveScrollWheel(
-            items: controller.getItems,
-            selectedIndex: controller.getSelectedIndex,
+            items: controller.items,
+            selectedIndex: controller.selectedIndex,
             onSelectedItemChanged: onSelectedItemChanged,
             looping: looping,
           )
         : FlatScrollWheel(
-            items: controller.getItems,
-            selectedIndex: controller.getSelectedIndex,
+            items: controller.items,
+            selectedIndex: controller.selectedIndex,
             onIndexChanged: onSelectedItemChanged,
             looping: looping,
           );

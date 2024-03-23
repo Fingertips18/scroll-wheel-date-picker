@@ -67,14 +67,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  infinite_carousel:
-    dependency: "direct main"
-    description:
-      name: infinite_carousel
-      sha256: "572967b028f4803e5f4be9adee5760b6c4834eb6912b0f2292f2d93a51912ba0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.1"
   lints:
     dependency: transitive
     description:
@@ -186,4 +178,3 @@ packages:
     version: "0.3.0"
 sdks:
   dart: ">=3.2.5 <4.0.0"
-  flutter: ">=3.3.0"

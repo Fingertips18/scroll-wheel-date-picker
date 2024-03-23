@@ -12,8 +12,6 @@ dependencies:
   flutter:
     sdk: flutter
 
-  infinite_carousel: ^1.1.1
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
