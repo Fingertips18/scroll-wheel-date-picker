@@ -23,7 +23,7 @@ class DatePickerScrollWheel extends StatelessWidget {
     this.scrollWheel = ScrollWheel.curve,
   }) : dateController = dateController ?? DateController.empty();
 
-  Widget scrollWidget({
+  Widget _scrollWidget({
     required IController controller,
     Function(int value)? onSelectedItemChanged,
     required bool looping,
@@ -64,8 +64,8 @@ class DatePickerScrollWheel extends StatelessWidget {
               Expanded(
                 child: ListenableBuilder(
                   listenable: dateController,
-                  builder: (_, __) => scrollWidget(
-                    controller: dateController.getDayManager,
+                  builder: (_, __) => _scrollWidget(
+                    controller: dateController.dayController,
                     onSelectedItemChanged: (value) => dateController.changeDay(day: value),
                     looping: loopDays,
                   ),
@@ -74,8 +74,8 @@ class DatePickerScrollWheel extends StatelessWidget {
 
               // Months
               Expanded(
-                child: scrollWidget(
-                  controller: dateController.getMonthManager,
+                child: _scrollWidget(
+                  controller: dateController.monthController,
                   onSelectedItemChanged: (value) => dateController.changeMonth(month: value),
                   looping: loopMonths,
                 ),
@@ -83,8 +83,8 @@ class DatePickerScrollWheel extends StatelessWidget {
 
               //Years
               Expanded(
-                child: scrollWidget(
-                  controller: dateController.getYearManager,
+                child: _scrollWidget(
+                  controller: dateController.yearController,
                   onSelectedItemChanged: (value) => dateController.changeYear(year: value),
                   looping: loopYears,
                 ),
