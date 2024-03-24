@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../controllers/date_controller.dart';
 import '../constants/theme_constant.dart';
-import '../controllers/icontroller.dart';
 import 'curve_scroll_wheel.dart';
 import 'flat_scroll_wheel.dart';
 
@@ -38,7 +37,7 @@ class DatePickerScrollWheel extends StatelessWidget {
         : FlatScrollWheel(
             items: controller.items,
             selectedIndex: controller.selectedIndex,
-            onIndexChanged: onSelectedItemChanged,
+            onSelectedItemChanged: onSelectedItemChanged,
             looping: looping,
           );
   }

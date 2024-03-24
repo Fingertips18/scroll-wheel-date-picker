@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../constants/date_constants.dart';
-import 'icontroller.dart';
 
 class DateController with ChangeNotifier {
   late _DayController _dayController;
@@ -222,4 +221,10 @@ List<String> _generateYears({required int startYear, required int lastYear}) {
 
 String _capitalize(String s) {
   return "${s[0].toUpperCase()}${s.substring(1).toLowerCase()}";
+}
+
+abstract interface class IController<T> {
+  IController copyWith();
+  int get selectedIndex;
+  List<String> get items;
 }

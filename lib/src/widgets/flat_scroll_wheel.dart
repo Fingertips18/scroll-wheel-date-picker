@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 
-import '../controllers/flat_scroll_wheel_view.dart';
+import '../controllers/flat_wheel_scroll_view.dart';
 import '../constants/theme_constant.dart';
 import 'scroll_item.dart';
 
 class FlatScrollWheel extends StatefulWidget {
   final List<String> items;
   final int selectedIndex;
-  final Function(int value)? onIndexChanged;
+  final Function(int value)? onSelectedItemChanged;
   final bool looping;
 
   const FlatScrollWheel({
     super.key,
     required this.items,
     required this.selectedIndex,
-    this.onIndexChanged,
+    this.onSelectedItemChanged,
     required this.looping,
   });
 
@@ -34,8 +34,8 @@ class _FlatScrollWheelState extends State<FlatScrollWheel> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.position.isScrollingNotifier.addListener(() {
         if (!_controller.position.isScrollingNotifier.value) {
-          if (widget.onIndexChanged != null) {
-            widget.onIndexChanged!(_controller.selectedItem % widget.items.length);
+          if (widget.onSelectedItemChanged != null) {
+            widget.onSelectedItemChanged!(_controller.selectedItem % widget.items.length);
           }
         }
       });
@@ -60,11 +60,12 @@ class _FlatScrollWheelState extends State<FlatScrollWheel> {
 
   @override
   Widget build(BuildContext context) {
-    return FlatScrollWheelView(
+    return FlatWheelScrollView(
       controller: _controller,
       physics: const FlatScrollPhysics(),
       itemExtent: kDefaultItemHeight,
       itemCount: widget.items.length,
+      looping: widget.looping,
       itemBuilder: (context, itemIndex) {
         return ScrollItem(
           label: widget.items[itemIndex],

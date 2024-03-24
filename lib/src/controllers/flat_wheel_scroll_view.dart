@@ -3,15 +3,16 @@ import 'dart:math' as math;
 import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
-class FlatScrollWheelView extends StatefulWidget {
-  const FlatScrollWheelView({
+class FlatWheelScrollView extends StatefulWidget {
+  const FlatWheelScrollView({
     super.key,
     this.controller,
     this.physics,
     this.scrollBehavior,
     required this.itemExtent,
     required this.itemCount,
-    this.onItemChanged,
+    required this.looping,
+    this.onSelectedItemChanged,
     required this.itemBuilder,
   });
 
@@ -20,16 +21,18 @@ class FlatScrollWheelView extends StatefulWidget {
   final ScrollBehavior? scrollBehavior;
   final double itemExtent;
   final int itemCount;
-  final ValueChanged<int>? onItemChanged;
+  final bool looping;
+  final ValueChanged<int>? onSelectedItemChanged;
   final Widget Function(BuildContext context, int itemIndex) itemBuilder;
 
   @override
-  State<StatefulWidget> createState() => _FlatScrollWheelViewState();
+  State<StatefulWidget> createState() => _FlatWheelScrollViewState();
 }
 
-class _FlatScrollWheelViewState extends State<FlatScrollWheelView> {
-  late FlatScrollController _controller;
-  late int _lastReportedItemIndex;
+class _FlatWheelScrollViewState extends State<FlatWheelScrollView> {
+  final Key _forwardListKey = const ValueKey<String>('flat_wheel_scroll_view');
+  late final FlatScrollController _controller;
+  int _lastReportedItemIndex = 0;
 
   @override
   void initState() {
@@ -60,17 +63,46 @@ class _FlatScrollWheelViewState extends State<FlatScrollWheelView> {
   }
 
   bool _handleNotification(ScrollNotification notification) {
-    if (notification.depth == 0 && widget.onItemChanged != null && notification is ScrollUpdateNotification && notification.metrics is FlatMetrics) {
+    if (notification.depth == 0 &&
+        widget.onSelectedItemChanged != null &&
+        notification is ScrollUpdateNotification &&
+        notification.metrics is FlatMetrics) {
       final FlatMetrics metrics = notification.metrics as FlatMetrics;
       final int currentItemIndex = metrics.itemIndex;
       if (currentItemIndex != _lastReportedItemIndex) {
         _lastReportedItemIndex = currentItemIndex;
         final int trueIndex = _getTrueIndex(_lastReportedItemIndex, widget.itemCount);
-        widget.onItemChanged?.call(trueIndex);
+        widget.onSelectedItemChanged?.call(trueIndex);
       }
     }
 
     return false;
+  }
+
+  List<Widget> _buildSlivers() {
+    Widget forward = SliverFixedExtentList(
+      key: _forwardListKey,
+      delegate: SliverChildBuilderDelegate(
+        (context, index) => widget.itemBuilder(context, index.abs() % widget.itemCount),
+        childCount: widget.looping ? null : widget.itemCount,
+      ),
+      itemExtent: widget.itemExtent,
+    );
+
+    if (!widget.looping) return [forward];
+
+    Widget reversed = SliverFixedExtentList(
+      delegate: SliverChildBuilderDelegate(
+        (context, index) => widget.itemBuilder(context, widget.itemCount - (index.abs() % widget.itemCount) - 1),
+      ),
+      itemExtent: widget.itemExtent,
+    );
+
+    return [reversed, forward];
+  }
+
+  double _getCenteredAnchor(BoxConstraints constraints) {
+    return ((constraints.maxHeight / 2) - (widget.itemExtent / 2)) / constraints.maxHeight;
   }
 
   @override
@@ -83,29 +115,21 @@ class _FlatScrollWheelViewState extends State<FlatScrollWheelView> {
             controller: _controller,
             physics: widget.physics,
             itemExtent: widget.itemExtent,
-            scrollBehavior: widget.scrollBehavior,
+            itemCount: widget.itemCount,
+            looping: widget.looping,
+            scrollBehavior: widget.scrollBehavior ?? ScrollConfiguration.of(context).copyWith(scrollbars: false),
             viewportBuilder: (context, position) {
               return Viewport(
+                center: _forwardListKey,
                 offset: position,
                 anchor: _getCenteredAnchor(constraints),
-                slivers: [
-                  SliverFixedExtentList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) => widget.itemBuilder(context, index.abs() % widget.itemCount),
-                    ),
-                    itemExtent: widget.itemExtent,
-                  ),
-                ],
+                slivers: _buildSlivers(),
               );
             },
           );
         },
       ),
     );
-  }
-
-  double _getCenteredAnchor(BoxConstraints constraints) {
-    return ((constraints.maxHeight / 2) - (widget.itemExtent / 2)) / constraints.maxHeight;
   }
 }
 
@@ -152,9 +176,13 @@ class _FlatScrollable extends Scrollable {
     super.scrollBehavior,
     required super.viewportBuilder,
     required this.itemExtent,
+    required this.looping,
+    required this.itemCount,
   });
 
   final double itemExtent;
+  final bool looping;
+  final int itemCount;
 
   @override
   _FlatScrollableState createState() => _FlatScrollableState();
@@ -162,6 +190,8 @@ class _FlatScrollable extends Scrollable {
 
 class _FlatScrollableState extends ScrollableState {
   double get itemExtent => (widget as _FlatScrollable).itemExtent;
+  bool get looping => (widget as _FlatScrollable).looping;
+  int get itemCount => (widget as _FlatScrollable).itemCount;
 }
 
 class _FlatScrollPosition extends ScrollPositionWithSingleContext implements FlatMetrics {
@@ -180,6 +210,16 @@ class _FlatScrollPosition extends ScrollPositionWithSingleContext implements Fla
     return (context as _FlatScrollableState).itemExtent;
   }
 
+  bool get looping => _getLoopingFromScrollExtent(context);
+  static bool _getLoopingFromScrollExtent(ScrollContext context) {
+    return (context as _FlatScrollableState).looping;
+  }
+
+  int get itemCount => _getItemCountFromScrollExtent(context);
+  static int _getItemCountFromScrollExtent(ScrollContext context) {
+    return (context as _FlatScrollableState).itemCount;
+  }
+
   @override
   int get itemIndex => _getItemFromOffset(
         offset: pixels,
@@ -187,6 +227,9 @@ class _FlatScrollPosition extends ScrollPositionWithSingleContext implements Fla
         minScrollExtent: minScrollExtent,
         maxScrollExtent: maxScrollExtent,
       );
+
+  @override
+  double get maxScrollExtent => looping ? (super.hasContentDimensions ? super.maxScrollExtent : 0.0) : itemExtent * (itemCount - 1);
 
   @override
   FlatMetrics copyWith({
