@@ -79,7 +79,7 @@ class _FlatWheelScrollViewState extends State<FlatWheelScrollView> {
     return false;
   }
 
-  List<Widget> _buildSlivers() {
+  List<Widget> _renderSlivers() {
     Widget forward = SliverFixedExtentList(
       key: _forwardListKey,
       delegate: SliverChildBuilderDelegate(
@@ -123,7 +123,7 @@ class _FlatWheelScrollViewState extends State<FlatWheelScrollView> {
                 center: _forwardListKey,
                 offset: position,
                 anchor: _getCenteredAnchor(constraints),
-                slivers: _buildSlivers(),
+                slivers: _renderSlivers(),
               );
             },
           );

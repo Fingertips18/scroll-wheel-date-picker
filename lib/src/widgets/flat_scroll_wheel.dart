@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../controllers/flat_wheel_scroll_view.dart';
-import '../constants/theme_constant.dart';
+import '../constants/theme_constants.dart';
 import 'scroll_item.dart';
 
 class FlatScrollWheel extends StatefulWidget {
-  final List<String> items;
-  final int selectedIndex;
-  final Function(int value)? onSelectedItemChanged;
-  final bool looping;
-
   const FlatScrollWheel({
     super.key,
     required this.items,
@@ -17,6 +12,11 @@ class FlatScrollWheel extends StatefulWidget {
     this.onSelectedItemChanged,
     required this.looping,
   });
+
+  final List<String> items;
+  final int selectedIndex;
+  final Function(int value)? onSelectedItemChanged;
+  final bool looping;
 
   @override
   State<FlatScrollWheel> createState() => _FlatScrollWheelState();

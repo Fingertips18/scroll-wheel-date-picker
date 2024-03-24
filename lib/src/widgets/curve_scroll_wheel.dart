@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../constants/theme_constant.dart';
+import '../constants/theme_constants.dart';
 import 'scroll_item.dart';
 
 class CurveScrollWheel extends StatefulWidget {

@@ -2,17 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../controllers/date_controller.dart';
-import '../constants/theme_constant.dart';
+import '../constants/theme_constants.dart';
 import 'curve_scroll_wheel.dart';
 import 'flat_scroll_wheel.dart';
 
 class DatePickerScrollWheel extends StatelessWidget {
-  final DateController dateController;
-  final bool loopDays;
-  final bool loopMonths;
-  final bool loopYears;
-  final ScrollWheel scrollWheel;
-
   DatePickerScrollWheel({
     super.key,
     DateController? dateController,
@@ -20,7 +14,21 @@ class DatePickerScrollWheel extends StatelessWidget {
     this.loopMonths = true,
     this.loopYears = false,
     this.scrollWheel = ScrollWheel.curve,
-  }) : dateController = dateController ?? DateController.empty();
+    this.overAndUnderCenterOpacity = kNotActiveItemOpacity,
+    this.backgroundColor,
+  })  : dateController = dateController ?? DateController.empty(),
+        assert(
+          scrollWheel == ScrollWheel.flat && backgroundColor != null,
+          "If scroll wheel is flat, specify a background color",
+        );
+
+  final DateController dateController;
+  final bool loopDays;
+  final bool loopMonths;
+  final bool loopYears;
+  final ScrollWheel scrollWheel;
+  final double overAndUnderCenterOpacity;
+  final Color? backgroundColor;
 
   Widget _scrollWidget({
     required IController controller,
@@ -91,6 +99,32 @@ class DatePickerScrollWheel extends StatelessWidget {
             ],
           ),
         ),
+        scrollWheel == ScrollWheel.flat
+            ? IgnorePointer(
+                child: SizedBox(
+                  height: kDefaultWheelPickerHeight,
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: backgroundColor?.withOpacity(1.0 - overAndUnderCenterOpacity.clamp(0.0, 1.0)),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: kDefaultItemHeight),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: backgroundColor?.withOpacity(1.0 - overAndUnderCenterOpacity.clamp(0.0, 1.0)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : const SizedBox.shrink(),
       ],
     );
   }

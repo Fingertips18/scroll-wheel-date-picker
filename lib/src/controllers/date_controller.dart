@@ -223,7 +223,7 @@ String _capitalize(String s) {
   return "${s[0].toUpperCase()}${s.substring(1).toLowerCase()}";
 }
 
-abstract interface class IController<T> {
+abstract interface class IController {
   IController copyWith();
   int get selectedIndex;
   List<String> get items;

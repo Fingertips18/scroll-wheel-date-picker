@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../constants/theme_constant.dart';
+import '../constants/theme_constants.dart';
 
 class ScrollItem extends StatelessWidget {
   final String label;
