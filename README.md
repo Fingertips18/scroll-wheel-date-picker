@@ -39,19 +39,15 @@ Supports looping on items. You can choose whether to enable looping on `days`, `
 
 ### Curve Scroll Wheel
 
-<p float="center">
-  <img src="demo/curve_holo.gif" width="300" />
-  <img src="demo/curve_highlight.gif" width="300" /> 
-  <img src="demo/curve_line.gif" width="300" />
-</p>
+|    Curve Holo Overlay    |    Curve Highlight Overlay    |    Curve Line Overlay    |
+| :----------------------: | :---------------------------: | :----------------------: |
+| ![](demo/curve_holo.gif) | ![](demo/curve_highlight.gif) | ![](demo/curve_line.gif) |
 
 ### Flat Scroll Wheel
 
-<p float="center">
-  <img src="demo/flat_holo.gif" width="300" />
-  <img src="demo/flat_highlight.gif" width="300" /> 
-  <img src="demo/flat_line.gif" width="300" />
-</p>
+|    Flat Holo Overlay    |    Flat Highlight Overlay    |    Flat Line Overlay    |
+| :---------------------: | :--------------------------: | :---------------------: |
+| ![](demo/flat_holo.gif) | ![](demo/flat_highlight.gif) | ![](demo/flat_line.gif) |
 
 # Usage
 
