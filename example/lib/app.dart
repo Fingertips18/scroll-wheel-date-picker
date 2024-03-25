@@ -1,7 +1,5 @@
+import 'package:wheel_date_picker/wheel_date_picker.dart';
 import 'package:flutter/material.dart';
-
-import 'src/widgets/date_picker_scroll_wheel.dart';
-import 'src/constants/theme_constants.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -17,9 +15,10 @@ class App extends StatelessWidget {
         body: Center(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: DatePickerScrollWheel(
-              scrollWheel: ScrollWheel.flat,
-              backgroundColor: Colors.grey[900],
+            child: WheelDatePicker(
+              theme: FlatDatePickerTheme(
+                backgroundColor: Colors.grey[900]!,
+              ),
             ),
           ),
         ),

@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 
-import '../constants/theme_constants.dart';
+import './wheel_date_picker.dart';
 
 class ScrollItem extends StatelessWidget {
-  final String label;
-
+  /// Item of a [WheelDatePicker] type.
+  ///
+  /// [label] Label of the [WheelDatePicker] item.
+  ///
+  /// [textStyle] Text style of the [WheelDatePicker] item.
   const ScrollItem({
     super.key,
     required this.label,
+    required this.textStyle,
   });
+
+  /// Label of the [WheelDatePicker] item.
+  final String label;
+
+  /// Text style of the [WheelDatePicker] item.
+  final TextStyle textStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +28,7 @@ class ScrollItem extends StatelessWidget {
         fit: BoxFit.scaleDown,
         child: Text(
           label,
-          style: kDefaultItemTextStyle,
+          style: textStyle,
         ),
       ),
     );

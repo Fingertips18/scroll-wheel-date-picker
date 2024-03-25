@@ -4,6 +4,25 @@ import 'package:flutter/physics.dart';
 import 'package:flutter/widgets.dart';
 
 class FlatWheelScrollView extends StatefulWidget {
+  /// `Based on [ListWheelScrollView] but with a flat perspective.`
+  ///
+  /// Custom physics and controller based on the [FixedExtentScrollPhysics] and [FixedExtentScrollController].
+  ///
+  /// [controller] Scroll controller for [FlatScrollPhysics].
+  ///
+  /// [physics] Makes sure we always land on a particular item after scrolling.
+  ///
+  /// [scrollBehavior] Scroll behavior for [FlatWheelScrollView].
+  ///
+  /// [itemExtent] Maximum size of an item in the main axis.
+  ///
+  /// [itemCount] Total items to render for the [FlatWheelScrollView].
+  ///
+  /// [looping] Whether to create an infinite scroll loop of the items in the [FlatWheelScrollView].
+  ///
+  /// [onSelectedItemChanged] Callback fired when an item is changed.
+  ///
+  /// [itemBuilder] To lazily build items on the viewport.
   const FlatWheelScrollView({
     super.key,
     this.controller,
@@ -16,13 +35,33 @@ class FlatWheelScrollView extends StatefulWidget {
     required this.itemBuilder,
   });
 
+  /// Scroll controller for [FlatScrollPhysics].
   final ScrollController? controller;
+
+  /// [FlatScrollPhysics], which makes sure we always land on a particular item after scrolling.
+  /// This is the `default` physics for [FlatWheelScrollView].
   final ScrollPhysics? physics;
+
+  /// Scroll behavior for [FlatWheelScrollView].
   final ScrollBehavior? scrollBehavior;
+
+  /// Maximum size of an item in the main axis.
   final double itemExtent;
+
+  /// Total items to render for the [FlatWheelScrollView].
   final int itemCount;
+
+  /// Whether to create an infinite scroll loop of the items in the [FlatWheelScrollView].
   final bool looping;
+
+  /// Callback fired when an item is changed.
   final ValueChanged<int>? onSelectedItemChanged;
+
+  /// To lazily build items on the viewport.
+  ///
+  /// If [looping] is true, two indexes are rendered by the item builder; `forward` and `reverse` items.
+  ///
+  /// Otherwise, only the `forward` index is rendered.
   final Widget Function(BuildContext context, int itemIndex) itemBuilder;
 
   @override

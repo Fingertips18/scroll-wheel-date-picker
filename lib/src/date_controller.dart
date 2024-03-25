@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../constants/date_constants.dart';
+import 'constants/date_constants.dart';
 
 class DateController with ChangeNotifier {
   late _DayController _dayController;
@@ -20,11 +20,9 @@ class DateController with ChangeNotifier {
         _monthController = _MonthController(selectedIndex: initialDate?.month),
         _yearController = _YearController(selectedIndex: initialDate?.year, startYear: startDate?.year, lastYear: lastDate?.year);
 
-  factory DateController.empty() => DateController();
-
-  IController get dayController => _dayController;
-  IController get monthController => _monthController;
-  IController get yearController => _yearController;
+  IDateController get dayController => _dayController;
+  IDateController get monthController => _monthController;
+  IDateController get yearController => _yearController;
 
   void changeDay({required int day}) {
     _dayController = _dayController.copyWith(selectedIndex: day);
@@ -33,6 +31,10 @@ class DateController with ChangeNotifier {
   void changeMonth({required int month}) {
     _monthController = _monthController.copyWith(selectedIndex: month);
     _updateNumberOfDays();
+  }
+
+  void changeMonthFormat({required MonthFormat format}) {
+    _monthController = _monthController.copyWith(monthFormat: format);
   }
 
   void changeYear({required int year}) {
@@ -49,7 +51,7 @@ class DateController with ChangeNotifier {
   }
 }
 
-class _DayController implements IController {
+class _DayController implements IDateController {
   final int _selectedIndex;
   final int _numberOfDays;
   final List<String> _days;
@@ -91,7 +93,7 @@ class _DayController implements IController {
       );
 }
 
-class _MonthController implements IController {
+class _MonthController implements IDateController {
   final MonthFormat _monthFormat;
   final int _selectedIndex;
   final List<String> _months;
@@ -134,7 +136,7 @@ class _MonthController implements IController {
       );
 }
 
-class _YearController implements IController {
+class _YearController implements IDateController {
   final int _selectedIndex;
   final int _startYear;
   final int _lastYear;
@@ -162,8 +164,8 @@ class _YearController implements IController {
     int? lastYear,
     int? selectedIndex,
   }) {
-    final int start = startYear ?? DateTime.parse(kStartDate).year;
-    final int last = lastYear ?? DateTime.parse(kLastDate).year;
+    final int start = startYear ?? DateTime.parse(startDate).year;
+    final int last = lastYear ?? DateTime.parse(lastDate).year;
 
     final generatedYears = _generateYears(startYear: start, lastYear: last);
 
@@ -223,8 +225,8 @@ String _capitalize(String s) {
   return "${s[0].toUpperCase()}${s.substring(1).toLowerCase()}";
 }
 
-abstract interface class IController {
-  IController copyWith();
+abstract interface class IDateController {
+  IDateController copyWith();
   int get selectedIndex;
   List<String> get items;
 }

@@ -1,3 +1,6 @@
+import '../date_controller.dart';
+
+/// Enum for [DateController]'s month format values
 enum Month {
   january(threeAbv: "jan", twoAbv: "ja"),
   february(threeAbv: "feb", twoAbv: "fe"),
@@ -20,11 +23,15 @@ enum Month {
   });
 }
 
+/// Enum for [DateController]'s month formats
 enum MonthFormat {
   full,
   threeLetters,
   twoLetters,
 }
 
-const String kStartDate = "1900-01-01 00:00:00";
-const String kLastDate = "2100-12-31 23:59:59";
+/// Default value of [DateController]'s start date
+const String startDate = "1900-01-01 00:00:00";
+
+/// Default value of [DateController]'s last date
+const String lastDate = "2100-12-31 23:59:59";

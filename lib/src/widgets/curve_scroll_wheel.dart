@@ -1,21 +1,69 @@
 import 'package:flutter/material.dart';
 
-import '../constants/theme_constants.dart';
+import '../date_controller.dart';
 import 'scroll_item.dart';
 
 class CurveScrollWheel extends StatefulWidget {
-  final List<String> items;
-  final int selectedIndex;
-  final Function(int value)? onSelectedItemChanged;
-  final bool looping;
-
+  /// `A widget that uses [ListWheelScrollView] to create a scroll with a curve perspective.`
+  ///
+  /// [items] Total items to render for the [CurveScrollWheel].
+  ///
+  /// [selectedIndex] Selected index of a specific [CurveScrollWheel]'s item.
+  ///
+  /// [controllerItemChanged] Apply changes based on the [DateController]'s functions when the [CurveScrollWheel] scroll animation completed.
+  ///
+  /// [onSelectedItemChanged] Callback fired when an item is changed.
+  ///
+  /// [looping] Whether to create an infinite scroll loop of the items in the [CurveScrollWheel].
+  ///
+  /// [diameterRatio] A curve ratio of the [CurveScrollWheel] in the main axis. Must be a positive number.
+  ///
+  /// [itemExtent] Maximum height of each [CurveScrollWheel]'s items.
+  ///
+  /// [overAndUnderCenterOpacity] Opacity of the items in the [CurveScrollWheel] that are off centered.
+  ///
+  /// [textStyle] Text style of the items in the [CurveScrollWheel].
   const CurveScrollWheel({
     super.key,
     required this.items,
     required this.selectedIndex,
+    required this.controllerItemChanged,
     this.onSelectedItemChanged,
     required this.looping,
+    required this.diameterRatio,
+    required this.itemExtent,
+    required this.overAndUnderCenterOpacity,
+    required this.textStyle,
   });
+
+  /// Total items to render for the [CurveScrollWheel].
+  final List<String> items;
+
+  /// Selected index of a specific [CurveScrollWheel]'s item.
+  final int selectedIndex;
+
+  /// Apply changes based on the [DateController]'s functions when the [CurveScrollWheel] scroll animation completed.
+  final Function(int value) controllerItemChanged;
+
+  /// Callback fired when an item is changed.
+  final Function(int value)? onSelectedItemChanged;
+
+  /// Whether to create an infinite scroll loop of the items in the [CurveScrollWheel].
+  final bool looping;
+
+  /// A curve ratio of the [CurveScrollWheel] in the main axis.
+  ///
+  /// Must be a positive number.
+  final double diameterRatio;
+
+  /// Maximum height of each [CurveScrollWheel]'s items.
+  final double itemExtent;
+
+  /// Opacity of the items in the [CurveScrollWheel] that are off centered.
+  final double overAndUnderCenterOpacity;
+
+  /// Text style of the items in the [CurveScrollWheel].
+  final TextStyle textStyle;
 
   @override
   State<CurveScrollWheel> createState() => _CurveScrollWheelState();
@@ -33,9 +81,7 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.position.isScrollingNotifier.addListener(() {
         if (!_controller.position.isScrollingNotifier.value) {
-          if (widget.onSelectedItemChanged != null) {
-            widget.onSelectedItemChanged!(_controller.selectedItem % widget.items.length);
-          }
+          widget.controllerItemChanged(_controller.selectedItem % widget.items.length);
         }
       });
     });
@@ -62,9 +108,10 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
     return ListWheelScrollView.useDelegate(
       controller: _controller,
       physics: const FixedExtentScrollPhysics(),
-      diameterRatio: kDefaultDiameterRatio,
-      itemExtent: kDefaultItemHeight,
-      overAndUnderCenterOpacity: kNotActiveItemOpacity,
+      diameterRatio: widget.diameterRatio,
+      itemExtent: widget.itemExtent,
+      overAndUnderCenterOpacity: widget.overAndUnderCenterOpacity,
+      onSelectedItemChanged: widget.onSelectedItemChanged,
       childDelegate: widget.looping
           ? ListWheelChildLoopingListDelegate(
               children: List.generate(
@@ -72,6 +119,7 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
                 (i) {
                   return ScrollItem(
                     label: widget.items[i],
+                    textStyle: widget.textStyle,
                   );
                 },
               ),
@@ -81,6 +129,7 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
               builder: (_, index) {
                 return ScrollItem(
                   label: widget.items[index],
+                  textStyle: widget.textStyle,
                 );
               },
             ),
