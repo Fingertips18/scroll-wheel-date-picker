@@ -11,7 +11,7 @@ class FlatHoloDatePicker extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: const Text(
-          "Flat Holo",
+          "Flat Holo Overlay",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -26,9 +26,9 @@ class FlatHoloDatePicker extends StatelessWidget {
           child: WheelDatePicker(
             theme: FlatDatePickerTheme(
               backgroundColor: Colors.white,
-              mode: WheelDatePickerMode.holo,
+              overlay: WheelDatePickerOverlay.holo,
               itemTextStyle: defaultItemTextStyle.copyWith(color: Colors.black),
-              modeColor: Colors.black,
+              overlayColor: Colors.black,
               overAndUnderCenterOpacity: 0.2,
             ),
           ),

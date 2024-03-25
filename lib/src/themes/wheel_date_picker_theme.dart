@@ -22,17 +22,17 @@ abstract class WheelDatePickerTheme {
   ///
   /// [itemTextStyle] Text style of the items in the [WheelDatePicker]. Defaults to [defaultItemTextStyle].
   ///
-  /// [mode] Apply selected item's center design. Defaults to [WheelDatePickerMode.holo].
+  /// [overlay] Apply selected item's center overlay. Defaults to [WheelDatePickerOverlay.holo].
   ///
-  /// [modeColor] Selected item's center design color.
+  /// [overlayColor] Selected item's center design color.
   WheelDatePickerTheme({
     this.wheelPickerHeight = defaultWheelPickerHeight,
     this.itemExtent = defaultItemExtent,
     this.overAndUnderCenterOpacity = defaultOpacity,
     this.monthFormat = MonthFormat.full,
     this.itemTextStyle = defaultItemTextStyle,
-    this.mode = WheelDatePickerMode.holo,
-    this.modeColor,
+    this.overlay = WheelDatePickerOverlay.holo,
+    this.overlayColor,
   });
 
   /// Actual height of the [WheelDatePicker] widget. Defaults to [defaultWheelPickerHeight].
@@ -56,15 +56,15 @@ abstract class WheelDatePickerTheme {
   /// Text style of the items in the [WheelDatePicker]. Defaults to [defaultItemTextStyle].
   final TextStyle itemTextStyle;
 
-  /// Apply selected item's center design. Defaults to [WheelDatePickerMode.holo].
-  final WheelDatePickerMode mode;
+  /// Apply selected item's center overlay. Defaults to [WheelDatePickerOverlay.holo].
+  final WheelDatePickerOverlay overlay;
 
-  /// Selected item's center design color.
+  /// Selected item's center overlay color.
   ///
-  /// If mode is [WheelDatePickerMode.holo] then this defaults to [Colors.white].
+  /// If overlay is [WheelDatePickerOverlay.holo] then this defaults to [Colors.white].
   ///
-  /// If mode is [WheelDatePickerMode.highlight] then this defaults to [Colors.grey] with an opacity of `0.1`.
+  /// If overlay is [WheelDatePickerOverlay.highlight] then this defaults to [Colors.grey] with an opacity of `0.1`.
   ///
-  /// If mode is [WheelDatePickerMode.line] then this defaults to [Colors.white].
-  final Color? modeColor;
+  /// If overlay is [WheelDatePickerOverlay.line] then this defaults to [Colors.white].
+  final Color? overlayColor;
 }

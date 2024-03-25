@@ -5,9 +5,9 @@ import '../constants/theme_constants.dart';
 import '../date_controller.dart';
 import 'curve_scroll_wheel.dart';
 import 'flat_scroll_wheel.dart';
-import 'modes/holo_mode.dart';
-import 'modes/line_mode.dart';
-import 'modes/ios_mode.dart';
+import 'overlays/holo_overlay.dart';
+import 'overlays/line_overlay.dart';
+import 'overlays/highlight_overlay.dart';
 
 class WheelDatePicker extends StatelessWidget {
   /// A scroll wheel date picker that has two types:
@@ -25,7 +25,7 @@ class WheelDatePicker extends StatelessWidget {
     this.loopYears = false,
     this.onSelectedItemChanged,
     required this.theme,
-    this.changeAfterAnimation = true,
+    this.listenAfterAnimation = true,
   }) : _dateController = DateController(
           initialDate: initialDate,
           startDate: startDate,
@@ -66,7 +66,7 @@ class WheelDatePicker extends StatelessWidget {
   final WheelDatePickerTheme theme;
 
   /// Whether to call the [onSelectedItemChanged] when the scroll wheel animation is completed. Defaults to `true`.
-  final bool changeAfterAnimation;
+  final bool listenAfterAnimation;
 
   /// Selects what type of scroll wheel to use based on [theme].
   Widget _scrollWidget({
@@ -84,7 +84,7 @@ class WheelDatePicker extends StatelessWidget {
             itemExtent: theme.itemExtent,
             overAndUnderCenterOpacity: theme.overAndUnderCenterOpacity,
             textStyle: theme.itemTextStyle,
-            changeAfterAnimation: changeAfterAnimation,
+            listenAfterAnimation: listenAfterAnimation,
           )
         : FlatScrollWheel(
             items: controller.items,
@@ -93,27 +93,27 @@ class WheelDatePicker extends StatelessWidget {
             looping: looping,
             itemExtent: theme.itemExtent,
             textStyle: theme.itemTextStyle,
-            changeAfterAnimation: changeAfterAnimation,
+            listenAfterAnimation: listenAfterAnimation,
           );
   }
 
-  /// Selects center design base on [WheelDatePickerMode].
-  Widget _mode() {
-    switch (theme.mode) {
-      case WheelDatePickerMode.highlight:
-        return IOSMode(
+  /// Selects center overlay base on [WheelDatePickerOverlay].
+  Widget _overlay() {
+    switch (theme.overlay) {
+      case WheelDatePickerOverlay.highlight:
+        return HightlightOverlay(
           height: theme.itemExtent,
-          color: theme.modeColor,
+          color: theme.overlayColor,
         );
-      case WheelDatePickerMode.holo:
-        return HoloMode(
+      case WheelDatePickerOverlay.holo:
+        return HoloOverlay(
           height: theme.itemExtent,
-          color: theme.modeColor,
+          color: theme.overlayColor,
         );
-      case WheelDatePickerMode.line:
-        return LineMode(
+      case WheelDatePickerOverlay.line:
+        return LineOverlay(
           height: theme.itemExtent,
-          color: theme.modeColor,
+          color: theme.overlayColor,
         );
       default:
         return const SizedBox.shrink();
@@ -127,7 +127,7 @@ class WheelDatePicker extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        _mode(),
+        _overlay(),
         SizedBox(
           height: theme.wheelPickerHeight,
           child: ShaderMask(

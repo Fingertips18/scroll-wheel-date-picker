@@ -11,7 +11,7 @@ class FlatHighlightDatePicker extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: const Text(
-          "Flat Highlight",
+          "Flat Highlight Overlay",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -26,7 +26,7 @@ class FlatHighlightDatePicker extends StatelessWidget {
           child: WheelDatePicker(
             theme: FlatDatePickerTheme(
               backgroundColor: Colors.grey[900]!,
-              mode: WheelDatePickerMode.highlight,
+              overlay: WheelDatePickerOverlay.highlight,
               monthFormat: MonthFormat.threeLetters,
             ),
           ),

@@ -11,7 +11,7 @@ class CurveHoloDatePicker extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: const Text(
-          "Curve Holo",
+          "Curve Holo Overlay",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -26,9 +26,9 @@ class CurveHoloDatePicker extends StatelessWidget {
           child: WheelDatePicker(
             theme: CurveDatePickerTheme(
               wheelPickerHeight: 200.0,
-              mode: WheelDatePickerMode.holo,
+              overlay: WheelDatePickerOverlay.holo,
               itemTextStyle: defaultItemTextStyle.copyWith(color: Colors.black),
-              modeColor: Colors.black,
+              overlayColor: Colors.black,
               overAndUnderCenterOpacity: 0.2,
             ),
           ),

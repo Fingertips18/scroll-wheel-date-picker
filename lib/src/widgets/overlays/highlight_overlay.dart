@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 
 import '../../constants/theme_constants.dart';
 
-class IOSMode extends StatelessWidget {
+class HightlightOverlay extends StatelessWidget {
   /// Creates a rounded rectangle background with the default [CupertinoContextMenu.kOpenBorderRadius] radius.
-  const IOSMode({
+  const HightlightOverlay({
     super.key,
     required this.height,
     this.color,
   });
 
-  /// Actual height of the [IOSMode].
+  /// Actual height of the [HightlightOverlay].
   final double height;
 
   /// Background color.

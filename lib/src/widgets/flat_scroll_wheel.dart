@@ -19,6 +19,8 @@ class FlatScrollWheel extends StatefulWidget {
   /// [itemExtent] Maximum height of each [FlatScrollWheel]'s items.
   ///
   /// [textStyle] Text style of the items in the [FlatScrollWheel].
+  ///
+  /// [listenAfterAnimation] Whether to call the [onSelectedItemChanged] when the scroll wheel animation is completed. Defaults to `true`.
   const FlatScrollWheel({
     super.key,
     required this.items,
@@ -27,7 +29,7 @@ class FlatScrollWheel extends StatefulWidget {
     required this.looping,
     required this.itemExtent,
     required this.textStyle,
-    required this.changeAfterAnimation,
+    required this.listenAfterAnimation,
   });
 
   /// Total items to render for the [FlatScrollWheel].
@@ -49,7 +51,7 @@ class FlatScrollWheel extends StatefulWidget {
   final TextStyle textStyle;
 
   /// Whether to call the [onSelectedItemChanged] when the scroll wheel animation is completed. Defaults to `true`.
-  final bool changeAfterAnimation;
+  final bool listenAfterAnimation;
 
   @override
   State<FlatScrollWheel> createState() => _FlatScrollWheelState();
@@ -64,7 +66,7 @@ class _FlatScrollWheelState extends State<FlatScrollWheel> {
 
     _controller = FlatScrollController(initialItem: widget.selectedIndex);
 
-    if (widget.changeAfterAnimation) {
+    if (widget.listenAfterAnimation) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _controller.position.isScrollingNotifier.addListener(() {
           if (!_controller.position.isScrollingNotifier.value) {
@@ -83,7 +85,7 @@ class _FlatScrollWheelState extends State<FlatScrollWheel> {
       _controller.jumpToItem(widget.selectedIndex);
     }
 
-    if (oldWidget.changeAfterAnimation != widget.changeAfterAnimation && widget.changeAfterAnimation) {
+    if (oldWidget.listenAfterAnimation != widget.listenAfterAnimation && widget.listenAfterAnimation) {
       _controller.removeListener(() {});
       _controller.position.isScrollingNotifier.addListener(() {
         if (!_controller.position.isScrollingNotifier.value) {
@@ -108,7 +110,7 @@ class _FlatScrollWheelState extends State<FlatScrollWheel> {
       itemExtent: widget.itemExtent,
       itemCount: widget.items.length,
       looping: widget.looping,
-      onSelectedItemChanged: widget.changeAfterAnimation ? null : widget.onSelectedItemChanged,
+      onSelectedItemChanged: widget.listenAfterAnimation ? null : widget.onSelectedItemChanged,
       itemBuilder: (context, itemIndex) {
         return ScrollItem(
           label: widget.items[itemIndex],

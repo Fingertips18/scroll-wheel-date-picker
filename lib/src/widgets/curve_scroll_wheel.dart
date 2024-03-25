@@ -20,6 +20,8 @@ class CurveScrollWheel extends StatefulWidget {
   /// [overAndUnderCenterOpacity] Opacity of the items in the [CurveScrollWheel] that are off centered.
   ///
   /// [textStyle] Text style of the items in the [CurveScrollWheel].
+  ///
+  /// [listenAfterAnimation] Whether to call the [onSelectedItemChanged] when the scroll wheel animation is completed. Defaults to `true`.
   const CurveScrollWheel({
     super.key,
     required this.items,
@@ -30,7 +32,7 @@ class CurveScrollWheel extends StatefulWidget {
     required this.itemExtent,
     required this.overAndUnderCenterOpacity,
     required this.textStyle,
-    required this.changeAfterAnimation,
+    required this.listenAfterAnimation,
   });
 
   /// Total items to render for the [CurveScrollWheel].
@@ -60,7 +62,7 @@ class CurveScrollWheel extends StatefulWidget {
   final TextStyle textStyle;
 
   /// Whether to call the [onSelectedItemChanged] when the scroll wheel animation is completed. Defaults to `true`.
-  final bool changeAfterAnimation;
+  final bool listenAfterAnimation;
 
   @override
   State<CurveScrollWheel> createState() => _CurveScrollWheelState();
@@ -75,7 +77,7 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
 
     _controller = FixedExtentScrollController(initialItem: widget.selectedIndex);
 
-    if (widget.changeAfterAnimation) {
+    if (widget.listenAfterAnimation) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _controller.position.isScrollingNotifier.addListener(() {
           if (!_controller.position.isScrollingNotifier.value) {
@@ -94,7 +96,7 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
       _controller.jumpToItem(widget.selectedIndex);
     }
 
-    if (oldWidget.changeAfterAnimation != widget.changeAfterAnimation && widget.changeAfterAnimation) {
+    if (oldWidget.listenAfterAnimation != widget.listenAfterAnimation && widget.listenAfterAnimation) {
       _controller.removeListener(() {});
       _controller.position.isScrollingNotifier.addListener(() {
         if (!_controller.position.isScrollingNotifier.value) {
@@ -119,7 +121,7 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
       diameterRatio: widget.diameterRatio,
       itemExtent: widget.itemExtent,
       overAndUnderCenterOpacity: widget.overAndUnderCenterOpacity,
-      onSelectedItemChanged: widget.changeAfterAnimation ? null : widget.onSelectedItemChanged,
+      onSelectedItemChanged: widget.listenAfterAnimation ? null : widget.onSelectedItemChanged,
       childDelegate: widget.looping
           ? ListWheelChildLoopingListDelegate(
               children: List.generate(

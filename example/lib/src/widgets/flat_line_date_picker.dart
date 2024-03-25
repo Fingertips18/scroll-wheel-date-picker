@@ -11,7 +11,7 @@ class FlatLineDatePicker extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: const Text(
-          "Flat Line",
+          "Flat Line Overlay",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -26,9 +26,9 @@ class FlatLineDatePicker extends StatelessWidget {
           child: WheelDatePicker(
             theme: FlatDatePickerTheme(
               backgroundColor: Colors.black,
-              mode: WheelDatePickerMode.line,
+              overlay: WheelDatePickerOverlay.line,
               monthFormat: MonthFormat.twoLetters,
-              modeColor: Colors.white,
+              overlayColor: Colors.white,
               overAndUnderCenterOpacity: 0.2,
             ),
           ),

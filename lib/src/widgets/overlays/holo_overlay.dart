@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../../constants/theme_constants.dart';
 
-class HoloMode extends StatelessWidget {
+class HoloOverlay extends StatelessWidget {
   /// Create a horizontal parallel lines separated with a space.
-  const HoloMode({
+  const HoloOverlay({
     super.key,
     required this.height,
     this.color,
   });
 
-  /// Gap between the lines of [HoloMode].
+  /// Gap between the lines of [HoloOverlay].
   final double height;
 
   /// Lines color.

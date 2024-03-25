@@ -11,7 +11,7 @@ class CurveLineDatePicker extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: const Text(
-          "Curve Line",
+          "Curve Line Overlay",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -26,9 +26,9 @@ class CurveLineDatePicker extends StatelessWidget {
           child: WheelDatePicker(
             theme: CurveDatePickerTheme(
               wheelPickerHeight: 200.0,
-              mode: WheelDatePickerMode.line,
+              overlay: WheelDatePickerOverlay.line,
               monthFormat: MonthFormat.twoLetters,
-              modeColor: Colors.white,
+              overlayColor: Colors.white,
               overAndUnderCenterOpacity: 0.2,
             ),
           ),

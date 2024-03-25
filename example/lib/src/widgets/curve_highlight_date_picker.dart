@@ -11,7 +11,7 @@ class CurveHighlightDatePicker extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: const Text(
-          "Curve Highlight",
+          "Curve Highlight Overlay",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -26,7 +26,7 @@ class CurveHighlightDatePicker extends StatelessWidget {
           child: WheelDatePicker(
             theme: CurveDatePickerTheme(
               wheelPickerHeight: 200.0,
-              mode: WheelDatePickerMode.highlight,
+              overlay: WheelDatePickerOverlay.highlight,
               monthFormat: MonthFormat.threeLetters,
             ),
           ),

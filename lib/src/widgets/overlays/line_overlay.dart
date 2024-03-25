@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../../constants/theme_constants.dart';
 
-class LineMode extends StatelessWidget {
+class LineOverlay extends StatelessWidget {
   /// Creates a horizontal parallel lines.
-  const LineMode({
+  const LineOverlay({
     super.key,
     required this.height,
     this.color,
   });
 
-  /// Gap between the lines of [LineMode].
+  /// Gap between the lines of [LineOverlay].
   final double height;
 
   /// Lines color.

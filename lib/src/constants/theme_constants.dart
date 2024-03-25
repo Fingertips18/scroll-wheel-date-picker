@@ -22,19 +22,19 @@ const TextStyle defaultItemTextStyle = TextStyle(
   fontSize: 18.0,
 );
 
-/// Enum for [WheelDatePicker]'s centered item design.
-enum WheelDatePickerMode {
+/// Enum for [WheelDatePicker]'s centered overlay.
+enum WheelDatePickerOverlay {
   none,
   holo,
   highlight,
   line,
 }
 
-/// Default value of [WheelDatePickerMode.line]'s & [WheelDatePickerMode.holo]'s border thickness. Defaults to `2.0`.
+/// Default value of [WheelDatePickerOverlay.line]'s & [WheelDatePickerOverlay.holo]'s border thickness. Defaults to `2.0`.
 const double defaultModeBorderThickness = 2.0;
 
-/// Default value of [WheelDatePickerMode.line]'s & [WheelDatePickerMode.holo]'s margin. Defaults to `8.0`.
+/// Default value of [WheelDatePickerOverlay.line]'s & [WheelDatePickerOverlay.holo]'s margin. Defaults to `8.0`.
 const double defaultModeMargin = 8.0;
 
-/// Default value of [WheelDatePickerMode.holo]'s line spacing. Defaults to `12.0`.
+/// Default value of [WheelDatePickerOverlay.holo]'s line spacing. Defaults to `12.0`.
 const double defaultModeSpacing = 18.0;

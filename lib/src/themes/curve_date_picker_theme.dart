@@ -13,9 +13,9 @@ class CurveDatePickerTheme extends WheelDatePickerTheme {
   ///
   /// [itemTextStyle] Text style of the items in the [WheelDatePicker]. Defaults to [defaultItemTextStyle].
   ///
-  /// [mode] Apply selected item's center design. Defaults to [WheelDatePickerMode.holo].
+  /// [overlay] Apply selected item's center overlay. Defaults to [WheelDatePickerOverlay.holo].
   ///
-  /// [modeColor] Selected item's center design color. Defaults to [Colors.black].
+  /// [overlayColor] Selected item's center design color. Defaults to [Colors.black].
   ///
   /// [diameterRatio] A curve ratio of the [WheelDatePicker] in the main axis. Defaults to [defaultDiameterRatio]. Must be a positive number.
   CurveDatePickerTheme({
@@ -25,8 +25,8 @@ class CurveDatePickerTheme extends WheelDatePickerTheme {
     super.overAndUnderCenterOpacity,
     super.monthFormat,
     super.itemTextStyle,
-    super.mode,
-    super.modeColor,
+    super.overlay,
+    super.overlayColor,
   });
 
   /// A curve ratio of the [WheelDatePicker] in the main axis. Defaults to [defaultDiameterRatio].
