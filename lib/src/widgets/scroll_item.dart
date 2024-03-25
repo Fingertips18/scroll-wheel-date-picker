@@ -25,7 +25,7 @@ class ScrollItem extends StatelessWidget {
     return Align(
       alignment: Alignment.center,
       child: FittedBox(
-        fit: BoxFit.scaleDown,
+        fit: BoxFit.contain,
         child: Text(
           label,
           style: textStyle,

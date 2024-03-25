@@ -22,6 +22,7 @@ class WheelDatePicker extends StatelessWidget {
     this.loopDays = true,
     this.loopMonths = true,
     this.loopYears = false,
+    this.wheelPickerHeight = defaultWheelPickerHeight,
     this.monthFormat = MonthFormat.full,
     this.onSelectedItemChanged,
     required this.theme,
@@ -51,6 +52,9 @@ class WheelDatePicker extends StatelessWidget {
 
   /// Whether to loop through all of the items in the years scroll wheel. Defaults to `false`.
   final bool loopYears;
+
+  /// Actual height of the [WheelDatePicker] widget. Defaults to [defaultWheelPickerHeight].
+  final double wheelPickerHeight;
 
   /// Format of the month in the [WheelDatePicker]. Defaults to [MonthFormat.full].
   ///
@@ -110,47 +114,58 @@ class WheelDatePicker extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         Container(
-          height: defaultItemExtent,
+          height: theme.itemExtent,
           decoration: BoxDecoration(
             color: Colors.grey[800]!.withOpacity(0.5),
             borderRadius: BorderRadius.circular(CupertinoContextMenu.kOpenBorderRadius),
           ),
         ),
         SizedBox(
-          height: defaultWheelPickerHeight,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Days
-              Expanded(
-                child: ListenableBuilder(
-                  listenable: _dateController,
-                  builder: (_, __) => _scrollWidget(
-                    controller: _dateController.dayController,
-                    controllerItemChanged: (value) => _dateController.changeDay(day: value),
-                    looping: loopDays,
+          height: wheelPickerHeight,
+          child: ShaderMask(
+            shaderCallback: (bounds) {
+              return const LinearGradient(
+                colors: [Colors.black, Colors.transparent, Colors.transparent, Colors.black],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                stops: [0.0, 0.08, 0.92, 1.0],
+              ).createShader(bounds);
+            },
+            blendMode: BlendMode.dstOut,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Days
+                Expanded(
+                  child: ListenableBuilder(
+                    listenable: _dateController,
+                    builder: (_, __) => _scrollWidget(
+                      controller: _dateController.dayController,
+                      controllerItemChanged: (value) => _dateController.changeDay(day: value),
+                      looping: loopDays,
+                    ),
                   ),
                 ),
-              ),
 
-              // Months
-              Expanded(
-                child: _scrollWidget(
-                  controller: _dateController.monthController,
-                  controllerItemChanged: (value) => _dateController.changeMonth(month: value),
-                  looping: loopMonths,
+                // Months
+                Expanded(
+                  child: _scrollWidget(
+                    controller: _dateController.monthController,
+                    controllerItemChanged: (value) => _dateController.changeMonth(month: value),
+                    looping: loopMonths,
+                  ),
                 ),
-              ),
 
-              //Years
-              Expanded(
-                child: _scrollWidget(
-                  controller: _dateController.yearController,
-                  controllerItemChanged: (value) => _dateController.changeYear(year: value),
-                  looping: loopYears,
+                //Years
+                Expanded(
+                  child: _scrollWidget(
+                    controller: _dateController.yearController,
+                    controllerItemChanged: (value) => _dateController.changeYear(year: value),
+                    looping: loopYears,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         theme is FlatDatePickerTheme
