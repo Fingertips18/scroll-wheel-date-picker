@@ -22,7 +22,7 @@ flutter:
 
 topics:
   - ui
-  - date picker
+  - datepicker
   - widgets
   - scroll
   - wheel
