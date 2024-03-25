@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'widgets/curve_scroll_wheel.dart';
+import 'widgets/flat_scroll_wheel.dart';
+import 'widgets/wheel_date_picker.dart';
 import 'constants/date_constants.dart';
 
+/// Uses [ChangeNotifier] to listen to changes when the [changeMonth] or [changeYear] is called.
 class DateController with ChangeNotifier {
-  late _DayController _dayController;
-  late _MonthController _monthController;
-  late _YearController _yearController;
-
+  /// Responsible for handling the initialization & changes of the [_DayController], [_MonthController] & [_YearController].
   DateController({
     DateTime? initialDate,
     DateTime? startDate,
@@ -18,30 +19,65 @@ class DateController with ChangeNotifier {
               month: initialDate?.month ?? DateTime.now().month,
             )),
         _monthController = _MonthController(selectedIndex: initialDate?.month),
-        _yearController = _YearController(selectedIndex: initialDate?.year, startYear: startDate?.year, lastYear: lastDate?.year);
+        _yearController = _YearController(
+          selectedIndex: initialDate?.year,
+          startYear: startDate?.year,
+          lastYear: lastDate?.year,
+        ),
+        _dateTime = DateTime(
+          initialDate?.year ?? DateTime.now().year,
+          initialDate?.month ?? DateTime.now().month,
+          initialDate?.day ?? DateTime.now().day,
+        );
+
+  late _DayController _dayController;
+  late _MonthController _monthController;
+  late _YearController _yearController;
+
+  /// Returns a [DateTime] value when the [onSelectedItemChanged] of the [WheelDatePicker] is used.
+  late DateTime _dateTime;
 
   IDateController get dayController => _dayController;
   IDateController get monthController => _monthController;
   IDateController get yearController => _yearController;
+  DateTime get dateTime => _dateTime;
 
+  /// Called when the selected item of the days [CurveScrollWheel] or [FlatScrollWheel] changed.
   void changeDay({required int day}) {
     _dayController = _dayController.copyWith(selectedIndex: day);
+
+    _dateTime = _dateTime.copyWith(day: day + 1);
   }
 
+  /// Called when the selected item of the months [CurveScrollWheel] or [FlatScrollWheel] changed.
   void changeMonth({required int month}) {
     _monthController = _monthController.copyWith(selectedIndex: month);
+
     _updateNumberOfDays();
+
+    _dateTime = _dateTime.copyWith(month: month + 1);
   }
 
+  /// Called when a [MonthFormat] is given in the [WheelDatePicker] constructor.
   void changeMonthFormat({required MonthFormat format}) {
     _monthController = _monthController.copyWith(monthFormat: format);
   }
 
+  /// Called when the selected item of the years [CurveScrollWheel] or [FlatScrollWheel] changed.
   void changeYear({required int year}) {
     _yearController = _yearController.copyWith(selectedIndex: year);
+
     _updateNumberOfDays();
+
+    _dateTime = _dateTime.copyWith(year: int.parse(_yearController.items[year]));
   }
 
+  /// Handles the change of the total number of days base on the selected month.
+  ///
+  /// Responsible for updating the total number of days in the [CurveScrollWheel] or [FlatScrollWheel].
+  ///
+  /// Called when the [changeMonth] & [changeYear] is triggered.
+  /// This is important so that the `total number of days` is updated when the month or year changes.
   void _updateNumberOfDays() {
     final int numberOfDays = _getNumberOfDays(year: _yearController.selectedIndex, month: _monthController.selectedIndex);
 
@@ -51,11 +87,11 @@ class DateController with ChangeNotifier {
   }
 }
 
+/// Responsible for the configuration of the [WheelDatePicker]'s days scroll wheel.
 class _DayController implements IDateController {
-  final int _selectedIndex;
-  final int _numberOfDays;
-  final List<String> _days;
-
+  /// A private constructor is needed in order to implement a factory method without including the list of [_days].
+  ///
+  /// This is a factor as well to create a [copyWith] & preventing other classes from creating a new list of [_days] outside of this class.
   const _DayController._({
     required int selectedIndex,
     required int numberOfDays,
@@ -63,6 +99,15 @@ class _DayController implements IDateController {
   })  : _selectedIndex = selectedIndex,
         _numberOfDays = numberOfDays,
         _days = days;
+
+  /// Currently selected index. Can be updated with [copyWith].
+  final int _selectedIndex;
+
+  /// Total number of days in a month. Can be updated with [copyWith].
+  final int _numberOfDays;
+
+  /// Collection of days in [String] type.
+  final List<String> _days;
 
   @override
   int get selectedIndex => _days.indexOf((_selectedIndex + 1).toString());
@@ -93,11 +138,11 @@ class _DayController implements IDateController {
       );
 }
 
+/// Responsible for the configuration of the [WheelDatePicker]'s months scroll wheel.
 class _MonthController implements IDateController {
-  final MonthFormat _monthFormat;
-  final int _selectedIndex;
-  final List<String> _months;
-
+  /// A private constructor is needed in order to implement a factory method without including the list of [_months].
+  ///
+  /// This is a factor as well to create a [copyWith] & preventing other classes from creating a new list of [_months] outside of this class.
   const _MonthController._({
     required MonthFormat monthFormat,
     required int selectedIndex,
@@ -105,6 +150,15 @@ class _MonthController implements IDateController {
   })  : _monthFormat = monthFormat,
         _selectedIndex = selectedIndex,
         _months = months;
+
+  /// Currently selected index. Can be updated with [copyWith].
+  final int _selectedIndex;
+
+  /// Applies the format of the months. Can be updated with [copyWith].
+  final MonthFormat _monthFormat;
+
+  /// Collection of months in [String] type.
+  final List<String> _months;
 
   factory _MonthController({
     MonthFormat? monthFormat,
@@ -136,12 +190,11 @@ class _MonthController implements IDateController {
       );
 }
 
+/// Responsible for the configuration of the [WheelDatePicker]'s years scroll wheel.
 class _YearController implements IDateController {
-  final int _selectedIndex;
-  final int _startYear;
-  final int _lastYear;
-  final List<String> _years;
-
+  /// A private constructor is needed in order to implement a factory method without including the list of [_years].
+  ///
+  /// This is a factor as well to create a [copyWith] & preventing other classes from creating a new list of [_years] outside of this class.
   _YearController._({
     required int selectedIndex,
     required int startYear,
@@ -151,6 +204,18 @@ class _YearController implements IDateController {
         _startYear = startYear,
         _lastYear = lastYear,
         _years = years;
+
+  /// Currently selected index. Can be updated with [copyWith].
+  final int _selectedIndex;
+
+  /// Initial year of the items. Can be updated with [copyWith].
+  final int _startYear;
+
+  /// Max year of the items. Can be updated with [copyWith].
+  final int _lastYear;
+
+  /// Collection of years in [String] type.
+  final List<String> _years;
 
   @override
   int get selectedIndex => _selectedIndex;
@@ -190,6 +255,13 @@ class _YearController implements IDateController {
       );
 }
 
+/// Responsible for getting the total number of days on a particular [month].
+///
+/// The [year] is needed to determine if its a leap year or not.
+///
+/// If it is a leap year & [month] is [DateTime.february], return `29`.
+///
+/// Otherwise, return `28`.
 int _getNumberOfDays({required int year, required int month}) {
   bool isLeapYear = false;
 
@@ -202,10 +274,22 @@ int _getNumberOfDays({required int year, required int month}) {
   return daysInMonths[month];
 }
 
+/// Responsible for creating the list of daays in [String] type.
+///
+/// Requires a [numberOfDays] to determine the total number of days to generate `from 1 to total number of days`.
 List<String> _generateDays({required int numberOfDays}) {
   return List.generate(numberOfDays, (i) => (i + 1).toString());
 }
 
+/// Responsible for creating the list of months in [String] type.
+///
+/// Requires a [MonthFormat] to determine what type of format to use to the list of months.
+///
+/// [MonthFormat.full] - Returns the full name of the months.
+///
+/// [MonthFormat.threeLetters] - Returns the three letters abbreviation name of the months.
+///
+/// [MonthFormat.twoLetters] - Returns the two letter abbreviation name of the months.
 List<String> _generateMonths(MonthFormat monthFormat) {
   switch (monthFormat) {
     case MonthFormat.threeLetters:
@@ -217,14 +301,21 @@ List<String> _generateMonths(MonthFormat monthFormat) {
   }
 }
 
+/// Responsible for creating the list of years in [String] type.
+///
+/// Requires a [startYear] to determine the initial item of the list.
+///
+/// Requires a [lastYear] to determine the end item of the list.
 List<String> _generateYears({required int startYear, required int lastYear}) {
   return List.generate((lastYear + 1) - startYear, (i) => (startYear + i).toString());
 }
 
+/// Ensures that the month's first letter is an upper case.
 String _capitalize(String s) {
   return "${s[0].toUpperCase()}${s.substring(1).toLowerCase()}";
 }
 
+/// An abstract class for the [_DayController], [_MonthController] & [_YearController].
 abstract interface class IDateController {
   IDateController copyWith();
   int get selectedIndex;

@@ -1,12 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../themes/wheel_date_picker_theme.dart';
 import '../constants/theme_constants.dart';
-import '../constants/date_constants.dart';
 import '../date_controller.dart';
 import 'curve_scroll_wheel.dart';
 import 'flat_scroll_wheel.dart';
+import 'modes/holo_mode.dart';
+import 'modes/line_mode.dart';
+import 'modes/ios_mode.dart';
 
 class WheelDatePicker extends StatelessWidget {
   /// A scroll wheel date picker that has two types:
@@ -22,10 +23,9 @@ class WheelDatePicker extends StatelessWidget {
     this.loopDays = true,
     this.loopMonths = true,
     this.loopYears = false,
-    this.wheelPickerHeight = defaultWheelPickerHeight,
-    this.monthFormat = MonthFormat.full,
     this.onSelectedItemChanged,
     required this.theme,
+    this.changeAfterAnimation = true,
   }) : _dateController = DateController(
           initialDate: initialDate,
           startDate: startDate,
@@ -53,22 +53,10 @@ class WheelDatePicker extends StatelessWidget {
   /// Whether to loop through all of the items in the years scroll wheel. Defaults to `false`.
   final bool loopYears;
 
-  /// Actual height of the [WheelDatePicker] widget. Defaults to [defaultWheelPickerHeight].
-  final double wheelPickerHeight;
-
-  /// Format of the month in the [WheelDatePicker]. Defaults to [MonthFormat.full].
-  ///
-  /// [MonthFormat.full] - Shows the full name of the month.
-  ///
-  /// [MonthFormat.threeLetters] - Shows the three letters abbreviations of the month.
-  ///
-  /// [MonthFormat.twoLetters] - Shows the two letters abbreviations of the month.
-  final MonthFormat monthFormat;
-
   /// Callback fired when an item is changed. Returns a [DateTime].
-  final Function(int value)? onSelectedItemChanged;
+  final Function(DateTime value)? onSelectedItemChanged;
 
-  /// An abstract class for common themes of the [WheelDatePicker].
+  /// An abstract class for common themes of the `WheelDatePicker`.
   ///
   /// Types of Themes supported by the [WheelDatePickerTheme].
   ///
@@ -77,51 +65,71 @@ class WheelDatePicker extends StatelessWidget {
   /// [FlatDatePickerTheme] - Theme for the [FlatScrollWheel].
   final WheelDatePickerTheme theme;
 
+  /// Whether to call the [onSelectedItemChanged] when the scroll wheel animation is completed. Defaults to `true`.
+  final bool changeAfterAnimation;
+
   /// Selects what type of scroll wheel to use based on [theme].
   Widget _scrollWidget({
     required IDateController controller,
-    required Function(int value) controllerItemChanged,
+    Function(int value)? controllerItemChanged,
     required bool looping,
   }) {
     return theme is CurveDatePickerTheme
         ? CurveScrollWheel(
             items: controller.items,
             selectedIndex: controller.selectedIndex,
-            controllerItemChanged: controllerItemChanged,
-            onSelectedItemChanged: onSelectedItemChanged,
+            onSelectedItemChanged: controllerItemChanged,
             looping: looping,
             diameterRatio: (theme as CurveDatePickerTheme).diameterRatio,
             itemExtent: theme.itemExtent,
             overAndUnderCenterOpacity: theme.overAndUnderCenterOpacity,
             textStyle: theme.itemTextStyle,
+            changeAfterAnimation: changeAfterAnimation,
           )
         : FlatScrollWheel(
             items: controller.items,
             selectedIndex: controller.selectedIndex,
-            controllerItemChanged: controllerItemChanged,
-            onSelectedItemChanged: onSelectedItemChanged,
+            onSelectedItemChanged: controllerItemChanged,
             looping: looping,
             itemExtent: theme.itemExtent,
             textStyle: theme.itemTextStyle,
+            changeAfterAnimation: changeAfterAnimation,
           );
+  }
+
+  /// Selects center design base on [WheelDatePickerMode].
+  Widget _mode() {
+    switch (theme.mode) {
+      case WheelDatePickerMode.highlight:
+        return IOSMode(
+          height: theme.itemExtent,
+          color: theme.modeColor,
+        );
+      case WheelDatePickerMode.holo:
+        return HoloMode(
+          height: theme.itemExtent,
+          color: theme.modeColor,
+        );
+      case WheelDatePickerMode.line:
+        return LineMode(
+          height: theme.itemExtent,
+          color: theme.modeColor,
+        );
+      default:
+        return const SizedBox.shrink();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    _dateController.changeMonthFormat(format: monthFormat);
+    _dateController.changeMonthFormat(format: theme.monthFormat);
 
     return Stack(
       alignment: Alignment.center,
       children: [
-        Container(
-          height: theme.itemExtent,
-          decoration: BoxDecoration(
-            color: Colors.grey[800]!.withOpacity(0.5),
-            borderRadius: BorderRadius.circular(CupertinoContextMenu.kOpenBorderRadius),
-          ),
-        ),
+        _mode(),
         SizedBox(
-          height: wheelPickerHeight,
+          height: theme.wheelPickerHeight,
           child: ShaderMask(
             shaderCallback: (bounds) {
               return const LinearGradient(
@@ -141,7 +149,10 @@ class WheelDatePicker extends StatelessWidget {
                     listenable: _dateController,
                     builder: (_, __) => _scrollWidget(
                       controller: _dateController.dayController,
-                      controllerItemChanged: (value) => _dateController.changeDay(day: value),
+                      controllerItemChanged: (value) {
+                        _dateController.changeDay(day: value);
+                        onSelectedItemChanged?.call(_dateController.dateTime);
+                      },
                       looping: loopDays,
                     ),
                   ),
@@ -151,7 +162,10 @@ class WheelDatePicker extends StatelessWidget {
                 Expanded(
                   child: _scrollWidget(
                     controller: _dateController.monthController,
-                    controllerItemChanged: (value) => _dateController.changeMonth(month: value),
+                    controllerItemChanged: (value) {
+                      _dateController.changeMonth(month: value);
+                      onSelectedItemChanged?.call(_dateController.dateTime);
+                    },
                     looping: loopMonths,
                   ),
                 ),
@@ -160,7 +174,10 @@ class WheelDatePicker extends StatelessWidget {
                 Expanded(
                   child: _scrollWidget(
                     controller: _dateController.yearController,
-                    controllerItemChanged: (value) => _dateController.changeYear(year: value),
+                    controllerItemChanged: (value) {
+                      _dateController.changeYear(year: value);
+                      onSelectedItemChanged?.call(_dateController.dateTime);
+                    },
                     looping: loopYears,
                   ),
                 ),

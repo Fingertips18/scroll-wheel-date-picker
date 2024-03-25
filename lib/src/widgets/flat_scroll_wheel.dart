@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'flat_wheel_scroll_view.dart';
-import '../date_controller.dart';
 import 'scroll_item.dart';
 
 class FlatScrollWheel extends StatefulWidget {
@@ -12,8 +11,6 @@ class FlatScrollWheel extends StatefulWidget {
   /// [items] Total items to render for the [FlatScrollWheel].
   ///
   /// [selectedIndex] Selected index of a specific [FlatScrollWheel]'s item.
-  ///
-  /// [controllerItemChanged] Apply changes based on the [DateController]'s functions when the [FlatScrollWheel] scroll animation completed.
   ///
   /// [onSelectedItemChanged] Callback fired when an item is changed.
   ///
@@ -26,11 +23,11 @@ class FlatScrollWheel extends StatefulWidget {
     super.key,
     required this.items,
     required this.selectedIndex,
-    required this.controllerItemChanged,
     this.onSelectedItemChanged,
     required this.looping,
     required this.itemExtent,
     required this.textStyle,
+    required this.changeAfterAnimation,
   });
 
   /// Total items to render for the [FlatScrollWheel].
@@ -38,9 +35,6 @@ class FlatScrollWheel extends StatefulWidget {
 
   /// Selected index of a specific [FlatScrollWheel]'s item.
   final int selectedIndex;
-
-  /// Apply changes based on the [DateController]'s functions when the [FlatScrollWheel] scroll animation completed.
-  final Function(int value) controllerItemChanged;
 
   /// Callback fired when an item is changed.
   final Function(int value)? onSelectedItemChanged;
@@ -53,6 +47,9 @@ class FlatScrollWheel extends StatefulWidget {
 
   /// Text style of the items in the [FlatScrollWheel].
   final TextStyle textStyle;
+
+  /// Whether to call the [onSelectedItemChanged] when the scroll wheel animation is completed. Defaults to `true`.
+  final bool changeAfterAnimation;
 
   @override
   State<FlatScrollWheel> createState() => _FlatScrollWheelState();
@@ -67,13 +64,15 @@ class _FlatScrollWheelState extends State<FlatScrollWheel> {
 
     _controller = FlatScrollController(initialItem: widget.selectedIndex);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.position.isScrollingNotifier.addListener(() {
-        if (!_controller.position.isScrollingNotifier.value) {
-          widget.controllerItemChanged(_controller.selectedItem % widget.items.length);
-        }
+    if (widget.changeAfterAnimation) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _controller.position.isScrollingNotifier.addListener(() {
+          if (!_controller.position.isScrollingNotifier.value) {
+            widget.onSelectedItemChanged?.call(_controller.selectedItem % widget.items.length);
+          }
+        });
       });
-    });
+    }
   }
 
   @override
@@ -82,6 +81,15 @@ class _FlatScrollWheelState extends State<FlatScrollWheel> {
 
     if (oldWidget.selectedIndex != widget.selectedIndex) {
       _controller.jumpToItem(widget.selectedIndex);
+    }
+
+    if (oldWidget.changeAfterAnimation != widget.changeAfterAnimation && widget.changeAfterAnimation) {
+      _controller.removeListener(() {});
+      _controller.position.isScrollingNotifier.addListener(() {
+        if (!_controller.position.isScrollingNotifier.value) {
+          widget.onSelectedItemChanged?.call(_controller.selectedItem % widget.items.length);
+        }
+      });
     }
   }
 
@@ -100,7 +108,7 @@ class _FlatScrollWheelState extends State<FlatScrollWheel> {
       itemExtent: widget.itemExtent,
       itemCount: widget.items.length,
       looping: widget.looping,
-      onSelectedItemChanged: widget.onSelectedItemChanged,
+      onSelectedItemChanged: widget.changeAfterAnimation ? null : widget.onSelectedItemChanged,
       itemBuilder: (context, itemIndex) {
         return ScrollItem(
           label: widget.items[itemIndex],

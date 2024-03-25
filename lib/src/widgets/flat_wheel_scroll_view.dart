@@ -70,25 +70,23 @@ class FlatWheelScrollView extends StatefulWidget {
 
 class _FlatWheelScrollViewState extends State<FlatWheelScrollView> {
   final Key _forwardListKey = const ValueKey<String>('flat_wheel_scroll_view');
-  late final FlatScrollController _controller;
+  FlatScrollController? _controller;
   int _lastReportedItemIndex = 0;
+
+  ScrollController get _effectiveController => widget.controller ?? (_controller ??= FlatScrollController());
 
   @override
   void initState() {
     super.initState();
-
-    if (widget.controller != null && widget.controller is FlatScrollController) {
-      _controller = widget.controller as FlatScrollController;
-    } else {
-      _controller = FlatScrollController();
+    if (widget.controller is FlatScrollController) {
+      final FlatScrollController controller = widget.controller! as FlatScrollController;
+      _lastReportedItemIndex = controller.initialItem;
     }
-
-    _lastReportedItemIndex = _controller.initialItem;
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
 
     super.dispose();
   }
@@ -151,7 +149,7 @@ class _FlatWheelScrollViewState extends State<FlatWheelScrollView> {
       child: LayoutBuilder(
         builder: (context, constraints) {
           return _FlatScrollable(
-            controller: _controller,
+            controller: _effectiveController,
             physics: widget.physics,
             itemExtent: widget.itemExtent,
             itemCount: widget.itemCount,

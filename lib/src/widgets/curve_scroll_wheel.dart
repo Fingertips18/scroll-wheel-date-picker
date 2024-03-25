@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../date_controller.dart';
 import 'scroll_item.dart';
 
 class CurveScrollWheel extends StatefulWidget {
@@ -9,8 +8,6 @@ class CurveScrollWheel extends StatefulWidget {
   /// [items] Total items to render for the [CurveScrollWheel].
   ///
   /// [selectedIndex] Selected index of a specific [CurveScrollWheel]'s item.
-  ///
-  /// [controllerItemChanged] Apply changes based on the [DateController]'s functions when the [CurveScrollWheel] scroll animation completed.
   ///
   /// [onSelectedItemChanged] Callback fired when an item is changed.
   ///
@@ -27,13 +24,13 @@ class CurveScrollWheel extends StatefulWidget {
     super.key,
     required this.items,
     required this.selectedIndex,
-    required this.controllerItemChanged,
     this.onSelectedItemChanged,
     required this.looping,
     required this.diameterRatio,
     required this.itemExtent,
     required this.overAndUnderCenterOpacity,
     required this.textStyle,
+    required this.changeAfterAnimation,
   });
 
   /// Total items to render for the [CurveScrollWheel].
@@ -41,9 +38,6 @@ class CurveScrollWheel extends StatefulWidget {
 
   /// Selected index of a specific [CurveScrollWheel]'s item.
   final int selectedIndex;
-
-  /// Apply changes based on the [DateController]'s functions when the [CurveScrollWheel] scroll animation completed.
-  final Function(int value) controllerItemChanged;
 
   /// Callback fired when an item is changed.
   final Function(int value)? onSelectedItemChanged;
@@ -65,6 +59,9 @@ class CurveScrollWheel extends StatefulWidget {
   /// Text style of the items in the [CurveScrollWheel].
   final TextStyle textStyle;
 
+  /// Whether to call the [onSelectedItemChanged] when the scroll wheel animation is completed. Defaults to `true`.
+  final bool changeAfterAnimation;
+
   @override
   State<CurveScrollWheel> createState() => _CurveScrollWheelState();
 }
@@ -78,13 +75,15 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
 
     _controller = FixedExtentScrollController(initialItem: widget.selectedIndex);
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.position.isScrollingNotifier.addListener(() {
-        if (!_controller.position.isScrollingNotifier.value) {
-          widget.controllerItemChanged(_controller.selectedItem % widget.items.length);
-        }
+    if (widget.changeAfterAnimation) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _controller.position.isScrollingNotifier.addListener(() {
+          if (!_controller.position.isScrollingNotifier.value) {
+            widget.onSelectedItemChanged?.call(_controller.selectedItem % widget.items.length);
+          }
+        });
       });
-    });
+    }
   }
 
   @override
@@ -93,6 +92,15 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
 
     if (oldWidget.selectedIndex != widget.selectedIndex) {
       _controller.jumpToItem(widget.selectedIndex);
+    }
+
+    if (oldWidget.changeAfterAnimation != widget.changeAfterAnimation && widget.changeAfterAnimation) {
+      _controller.removeListener(() {});
+      _controller.position.isScrollingNotifier.addListener(() {
+        if (!_controller.position.isScrollingNotifier.value) {
+          widget.onSelectedItemChanged?.call(_controller.selectedItem % widget.items.length);
+        }
+      });
     }
   }
 
@@ -111,7 +119,7 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
       diameterRatio: widget.diameterRatio,
       itemExtent: widget.itemExtent,
       overAndUnderCenterOpacity: widget.overAndUnderCenterOpacity,
-      onSelectedItemChanged: widget.onSelectedItemChanged,
+      onSelectedItemChanged: widget.changeAfterAnimation ? null : widget.onSelectedItemChanged,
       childDelegate: widget.looping
           ? ListWheelChildLoopingListDelegate(
               children: List.generate(
