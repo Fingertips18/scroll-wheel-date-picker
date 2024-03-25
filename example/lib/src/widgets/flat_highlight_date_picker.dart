@@ -1,4 +1,4 @@
-import 'package:wheel_date_picker/wheel_date_picker.dart';
+import 'package:scroll_wheel_date_picker/scroll_wheel_date_picker.dart';
 import 'package:flutter/material.dart';
 
 class FlatHighlightDatePicker extends StatelessWidget {
@@ -23,10 +23,10 @@ class FlatHighlightDatePicker extends StatelessWidget {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: WheelDatePicker(
+          child: ScrollWheelDatePicker(
             theme: FlatDatePickerTheme(
               backgroundColor: Colors.grey[900]!,
-              overlay: WheelDatePickerOverlay.highlight,
+              overlay: ScrollWheelDatePickerOverlay.highlight,
               monthFormat: MonthFormat.threeLetters,
             ),
           ),

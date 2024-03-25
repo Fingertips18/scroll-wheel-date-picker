@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../themes/wheel_date_picker_theme.dart';
+import '../themes/scroll_wheel_date_picker_theme.dart';
 import '../constants/theme_constants.dart';
 import '../date_controller.dart';
 import 'curve_scroll_wheel.dart';
@@ -9,13 +9,13 @@ import 'overlays/holo_overlay.dart';
 import 'overlays/line_overlay.dart';
 import 'overlays/highlight_overlay.dart';
 
-class WheelDatePicker extends StatelessWidget {
+class ScrollWheelDatePicker extends StatelessWidget {
   /// A scroll wheel date picker that has two types:
   ///
   /// `CurveScrollWheel` - Uses [ListWheelScrollView] to create a date picker with a curve perspective.
   ///
   /// `FlatScrollWheel` - Based on [ListWheelScrollView] to create a date picker with a flat perspective.
-  WheelDatePicker({
+  ScrollWheelDatePicker({
     super.key,
     this.initialDate,
     this.startDate,
@@ -32,16 +32,16 @@ class WheelDatePicker extends StatelessWidget {
           lastDate: lastDate,
         );
 
-  /// The initial date for the [WheelDatePicker]. Defaults to [DateTime.now].
+  /// The initial date for the [ScrollWheelDatePicker]. Defaults to [DateTime.now].
   final DateTime? initialDate;
 
-  /// Sets the start date for the [WheelDatePicker]. Defaults to [startDate].
+  /// Sets the start date for the [ScrollWheelDatePicker]. Defaults to [startDate].
   final DateTime? startDate;
 
-  /// Sets the last date for the [WheelDatePicker]. Defaults to [lastDate].
+  /// Sets the last date for the [ScrollWheelDatePicker]. Defaults to [lastDate].
   final DateTime? lastDate;
 
-  /// Manages the initialization and changes of the [WheelDatePicker].
+  /// Manages the initialization and changes of the [ScrollWheelDatePicker].
   final DateController _dateController;
 
   /// Whether to loop through all of the items in the days scroll wheel. Defaults to `true`.
@@ -58,12 +58,12 @@ class WheelDatePicker extends StatelessWidget {
 
   /// An abstract class for common themes of the `WheelDatePicker`.
   ///
-  /// Types of Themes supported by the [WheelDatePickerTheme].
+  /// Types of Themes supported by the [ScrollWheelDatePickerTheme].
   ///
   /// [CurveDatePickerTheme] - Theme for the [CurveScrollWheel].
   ///
   /// [FlatDatePickerTheme] - Theme for the [FlatScrollWheel].
-  final WheelDatePickerTheme theme;
+  final ScrollWheelDatePickerTheme theme;
 
   /// Whether to call the [onSelectedItemChanged] when the scroll wheel animation is completed. Defaults to `true`.
   final bool listenAfterAnimation;
@@ -97,20 +97,20 @@ class WheelDatePicker extends StatelessWidget {
           );
   }
 
-  /// Selects center overlay base on [WheelDatePickerOverlay].
+  /// Selects center overlay base on [ScrollWheelDatePickerOverlay].
   Widget _overlay() {
     switch (theme.overlay) {
-      case WheelDatePickerOverlay.highlight:
+      case ScrollWheelDatePickerOverlay.highlight:
         return HightlightOverlay(
           height: theme.itemExtent,
           color: theme.overlayColor,
         );
-      case WheelDatePickerOverlay.holo:
+      case ScrollWheelDatePickerOverlay.holo:
         return HoloOverlay(
           height: theme.itemExtent,
           color: theme.overlayColor,
         );
-      case WheelDatePickerOverlay.line:
+      case ScrollWheelDatePickerOverlay.line:
         return LineOverlay(
           height: theme.itemExtent,
           color: theme.overlayColor,

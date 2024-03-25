@@ -1,23 +1,23 @@
-part of 'wheel_date_picker_theme.dart';
+part of 'scroll_wheel_date_picker_theme.dart';
 
-class FlatDatePickerTheme extends WheelDatePickerTheme {
+class FlatDatePickerTheme extends ScrollWheelDatePickerTheme {
   /// Theme for the `FlatScrollWheel`. [FlatScrollWheel]
   ///
-  /// [wheelPickerHeight] Actual height of the [WheelDatePicker] widget. Defaults to [defaultWheelPickerHeight].
+  /// [wheelPickerHeight] Actual height of the [ScrollWheelDatePicker] widget. Defaults to [defaultWheelPickerHeight].
   ///
-  /// [itemExtent] Maximum height of each [WheelDatePicker]'s items. Defaults to [defaultItemExtent].
+  /// [itemExtent] Maximum height of each [ScrollWheelDatePicker]'s items. Defaults to [defaultItemExtent].
   ///
-  /// [overAndUnderCenterOpacity] Opacity of the items in the [WheelDatePicker] that are off centered. Defaults to [defaultOpacity].
+  /// [overAndUnderCenterOpacity] Opacity of the items in the [ScrollWheelDatePicker] that are off centered. Defaults to [defaultOpacity].
   ///
-  /// [monthFormat] Format of the month in the [WheelDatePicker]. Defaults to [MonthFormat.full].
+  /// [monthFormat] Format of the month in the [ScrollWheelDatePicker]. Defaults to [MonthFormat.full].
   ///
-  /// [itemTextStyle] Text style of the items in the [WheelDatePicker]. Defaults to [defaultItemTextStyle].
+  /// [itemTextStyle] Text style of the items in the [ScrollWheelDatePicker]. Defaults to [defaultItemTextStyle].
   ///
-  /// [overlay] Apply selected item's center overlay. Defaults to [WheelDatePickerOverlay.holo].
+  /// [overlay] Apply selected item's center overlay. Defaults to [ScrollWheelDatePickerOverlay.holo].
   ///
   /// [overlayColor] Selected item's center design color. Defaults to [Colors.black].
   ///
-  /// [backgroundColor] Overlay color of the [WheelDatePicker] items that are off centered. Defaults to [Colors.transparent].
+  /// [backgroundColor] Overlay color of the [ScrollWheelDatePicker] items that are off centered. Defaults to [Colors.transparent].
 
   FlatDatePickerTheme({
     super.wheelPickerHeight,
@@ -30,6 +30,6 @@ class FlatDatePickerTheme extends WheelDatePickerTheme {
     required this.backgroundColor,
   });
 
-  /// Overlay color of the [WheelDatePicker] items that are off centered. Defaults to [Colors.transparent].
+  /// Overlay color of the [ScrollWheelDatePicker] items that are off centered. Defaults to [Colors.transparent].
   final Color backgroundColor;
 }

@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 
-import './wheel_date_picker.dart';
+import 'scroll_wheel_date_picker.dart';
 
 class ScrollItem extends StatelessWidget {
-  /// Item of a [WheelDatePicker] type.
+  /// Item of a [ScrollWheelDatePicker] type.
   ///
-  /// [label] Label of the [WheelDatePicker] item.
+  /// [label] Label of the [ScrollWheelDatePicker] item.
   ///
-  /// [textStyle] Text style of the [WheelDatePicker] item.
+  /// [textStyle] Text style of the [ScrollWheelDatePicker] item.
   const ScrollItem({
     super.key,
     required this.label,
     required this.textStyle,
   });
 
-  /// Label of the [WheelDatePicker] item.
+  /// Label of the [ScrollWheelDatePicker] item.
   final String label;
 
-  /// Text style of the [WheelDatePicker] item.
+  /// Text style of the [ScrollWheelDatePicker] item.
   final TextStyle textStyle;
 
   @override

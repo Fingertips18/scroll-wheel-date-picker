@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'widgets/curve_scroll_wheel.dart';
 import 'widgets/flat_scroll_wheel.dart';
-import 'widgets/wheel_date_picker.dart';
+import 'widgets/scroll_wheel_date_picker.dart';
 import 'constants/date_constants.dart';
 
 /// Uses [ChangeNotifier] to listen to changes when the [changeMonth] or [changeYear] is called.
@@ -34,7 +34,7 @@ class DateController with ChangeNotifier {
   late _MonthController _monthController;
   late _YearController _yearController;
 
-  /// Returns a [DateTime] value when the [onSelectedItemChanged] of the [WheelDatePicker] is used.
+  /// Returns a [DateTime] value when the [onSelectedItemChanged] of the [ScrollWheelDatePicker] is used.
   late DateTime _dateTime;
 
   IDateController get dayController => _dayController;
@@ -58,7 +58,7 @@ class DateController with ChangeNotifier {
     _dateTime = _dateTime.copyWith(month: month + 1);
   }
 
-  /// Called when a [MonthFormat] is given in the [WheelDatePicker] constructor.
+  /// Called when a [MonthFormat] is given in the [ScrollWheelDatePicker] constructor.
   void changeMonthFormat({required MonthFormat format}) {
     _monthController = _monthController.copyWith(monthFormat: format);
   }
@@ -87,7 +87,7 @@ class DateController with ChangeNotifier {
   }
 }
 
-/// Responsible for the configuration of the [WheelDatePicker]'s days scroll wheel.
+/// Responsible for the configuration of the [ScrollWheelDatePicker]'s days scroll wheel.
 class _DayController implements IDateController {
   /// A private constructor is needed in order to implement a factory method without including the list of [_days].
   ///
@@ -138,7 +138,7 @@ class _DayController implements IDateController {
       );
 }
 
-/// Responsible for the configuration of the [WheelDatePicker]'s months scroll wheel.
+/// Responsible for the configuration of the [ScrollWheelDatePicker]'s months scroll wheel.
 class _MonthController implements IDateController {
   /// A private constructor is needed in order to implement a factory method without including the list of [_months].
   ///
@@ -190,7 +190,7 @@ class _MonthController implements IDateController {
       );
 }
 
-/// Responsible for the configuration of the [WheelDatePicker]'s years scroll wheel.
+/// Responsible for the configuration of the [ScrollWheelDatePicker]'s years scroll wheel.
 class _YearController implements IDateController {
   /// A private constructor is needed in order to implement a factory method without including the list of [_years].
   ///

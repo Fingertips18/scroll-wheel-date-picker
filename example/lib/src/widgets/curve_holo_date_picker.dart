@@ -1,4 +1,4 @@
-import 'package:wheel_date_picker/wheel_date_picker.dart';
+import 'package:scroll_wheel_date_picker/scroll_wheel_date_picker.dart';
 import 'package:flutter/material.dart';
 
 class CurveHoloDatePicker extends StatelessWidget {
@@ -23,10 +23,10 @@ class CurveHoloDatePicker extends StatelessWidget {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: WheelDatePicker(
+          child: ScrollWheelDatePicker(
             theme: CurveDatePickerTheme(
               wheelPickerHeight: 200.0,
-              overlay: WheelDatePickerOverlay.holo,
+              overlay: ScrollWheelDatePickerOverlay.holo,
               itemTextStyle: defaultItemTextStyle.copyWith(color: Colors.black),
               overlayColor: Colors.black,
               overAndUnderCenterOpacity: 0.2,

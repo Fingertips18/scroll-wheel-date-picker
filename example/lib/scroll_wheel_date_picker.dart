@@ -7,8 +7,8 @@ import 'src/widgets/curve_holo_date_picker.dart';
 import 'src/widgets/flat_holo_date_picker.dart';
 import 'src/widgets/flat_line_date_picker.dart';
 
-class WheelDatePicker extends StatelessWidget {
-  const WheelDatePicker({super.key});
+class ScrollWheelDatePicker extends StatelessWidget {
+  const ScrollWheelDatePicker({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class WheelDatePicker extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: const Text(
-          "Wheel Date Picker",
+          "Scroll Wheel Date Picker",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
