@@ -7,7 +7,6 @@ class FlatLineDatePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: const Text(

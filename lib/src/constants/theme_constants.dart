@@ -17,7 +17,6 @@ const double defaultOpacity = 0.1;
 
 /// Default value of [ScrollWheelDatePicker]'s item textstyle.
 const TextStyle defaultItemTextStyle = TextStyle(
-  color: Colors.white,
   fontWeight: FontWeight.bold,
   fontSize: 18.0,
 );

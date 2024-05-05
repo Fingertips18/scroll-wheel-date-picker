@@ -7,7 +7,6 @@ class FlatHighlightDatePicker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[900],
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: const Text(
