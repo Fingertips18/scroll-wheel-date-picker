@@ -59,7 +59,7 @@ class CurveScrollWheel extends StatefulWidget {
   final double overAndUnderCenterOpacity;
 
   /// Text style of the items in the [CurveScrollWheel].
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   /// Whether to call the [onSelectedItemChanged] when the scroll wheel animation is completed. Defaults to `true`.
   final bool listenAfterAnimation;
@@ -92,7 +92,7 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
   void didUpdateWidget(covariant CurveScrollWheel oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.selectedIndex != widget.selectedIndex) {
+    if (oldWidget.items.length != widget.items.length || oldWidget.selectedIndex != widget.selectedIndex) {
       _controller.jumpToItem(widget.selectedIndex);
     }
 
@@ -109,7 +109,6 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
   @override
   void dispose() {
     _controller.dispose();
-
     super.dispose();
   }
 

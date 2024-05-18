@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 
 import '../themes/scroll_wheel_date_picker_theme.dart';
 import '../constants/theme_constants.dart';
+import '../constants/date_constants.dart';
+import 'overlays/highlight_overlay.dart';
+import 'overlays/holo_overlay.dart';
+import 'overlays/line_overlay.dart';
 import '../date_controller.dart';
 import 'curve_scroll_wheel.dart';
 import 'flat_scroll_wheel.dart';
-import 'overlays/holo_overlay.dart';
-import 'overlays/line_overlay.dart';
-import 'overlays/highlight_overlay.dart';
 
-class ScrollWheelDatePicker extends StatelessWidget {
+class ScrollWheelDatePicker extends StatefulWidget {
   /// A scroll wheel date picker that has two types:
   ///
   /// `CurveScrollWheel` - Uses [ListWheelScrollView] to create a date picker with a curve perspective.
   ///
   /// `FlatScrollWheel` - Based on [ListWheelScrollView] to create a date picker with a flat perspective.
-  ScrollWheelDatePicker({
+  const ScrollWheelDatePicker({
     super.key,
     this.initialDate,
     this.startDate,
@@ -26,11 +27,7 @@ class ScrollWheelDatePicker extends StatelessWidget {
     this.onSelectedItemChanged,
     required this.theme,
     this.listenAfterAnimation = true,
-  }) : _dateController = DateController(
-          initialDate: initialDate,
-          startDate: startDate,
-          lastDate: lastDate,
-        );
+  });
 
   /// The initial date for the [ScrollWheelDatePicker]. Defaults to [DateTime.now].
   final DateTime? initialDate;
@@ -40,9 +37,6 @@ class ScrollWheelDatePicker extends StatelessWidget {
 
   /// Sets the last date for the [ScrollWheelDatePicker]. Defaults to [lastDate].
   final DateTime? lastDate;
-
-  /// Manages the initialization and changes of the [ScrollWheelDatePicker].
-  final DateController _dateController;
 
   /// Whether to loop through all of the items in the days scroll wheel. Defaults to `true`.
   final bool loopDays;
@@ -68,52 +62,103 @@ class ScrollWheelDatePicker extends StatelessWidget {
   /// Whether to call the [onSelectedItemChanged] when the scroll wheel animation is completed. Defaults to `true`.
   final bool listenAfterAnimation;
 
-  /// Selects what type of scroll wheel to use based on [theme].
+  @override
+  State<ScrollWheelDatePicker> createState() => _ScrollWheelDatePickerState();
+}
+
+class _ScrollWheelDatePickerState extends State<ScrollWheelDatePicker> {
+  /// Manages the initialization and changes of the [ScrollWheelDatePicker].
+  late final DateController _dateController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _dateController = DateController(
+      initialDate: widget.initialDate,
+      startDate: widget.startDate,
+      lastDate: widget.lastDate,
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant ScrollWheelDatePicker oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.initialDate != widget.initialDate) {
+      _dateController.changeInitialDate(widget.initialDate ?? DateTime.now());
+    }
+
+    if (oldWidget.startDate != widget.startDate) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _dateController.changeStartDate(widget.startDate ?? DateTime.parse(defaultStartDate));
+      });
+    }
+
+    if (oldWidget.lastDate != widget.lastDate) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _dateController.changeLastDate(widget.lastDate ?? DateTime.parse(defaultLastDate));
+      });
+    }
+
+    if (oldWidget.theme.monthFormat != widget.theme.monthFormat) {
+      _dateController.changeMonthFormat(format: widget.theme.monthFormat);
+    }
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+
+    super.dispose();
+  }
+
+  /// Selects what type of scroll wheel to use based on [widget.theme].
   Widget _scrollWidget({
     required IDateController controller,
     Function(int value)? controllerItemChanged,
     required bool looping,
   }) {
-    return theme is CurveDatePickerTheme
+    return widget.theme is CurveDatePickerTheme
         ? CurveScrollWheel(
             items: controller.items,
             selectedIndex: controller.selectedIndex,
             onSelectedItemChanged: controllerItemChanged,
             looping: looping,
-            diameterRatio: (theme as CurveDatePickerTheme).diameterRatio,
-            itemExtent: theme.itemExtent,
-            overAndUnderCenterOpacity: theme.overAndUnderCenterOpacity,
-            textStyle: theme.itemTextStyle,
-            listenAfterAnimation: listenAfterAnimation,
+            diameterRatio: (widget.theme as CurveDatePickerTheme).diameterRatio,
+            itemExtent: widget.theme.itemExtent,
+            overAndUnderCenterOpacity: widget.theme.overAndUnderCenterOpacity,
+            textStyle: widget.theme.itemTextStyle,
+            listenAfterAnimation: widget.listenAfterAnimation,
           )
         : FlatScrollWheel(
             items: controller.items,
             selectedIndex: controller.selectedIndex,
             onSelectedItemChanged: controllerItemChanged,
             looping: looping,
-            itemExtent: theme.itemExtent,
-            textStyle: theme.itemTextStyle,
-            listenAfterAnimation: listenAfterAnimation,
+            itemExtent: widget.theme.itemExtent,
+            textStyle: widget.theme.itemTextStyle,
+            listenAfterAnimation: widget.listenAfterAnimation,
           );
   }
 
   /// Selects center overlay base on [ScrollWheelDatePickerOverlay].
   Widget _overlay() {
-    switch (theme.overlay) {
+    switch (widget.theme.overlay) {
       case ScrollWheelDatePickerOverlay.highlight:
         return HightlightOverlay(
-          height: theme.itemExtent,
-          color: theme.overlayColor,
+          height: widget.theme.itemExtent,
+          color: widget.theme.overlayColor,
         );
       case ScrollWheelDatePickerOverlay.holo:
         return HoloOverlay(
-          height: theme.itemExtent,
-          color: theme.overlayColor,
+          height: widget.theme.itemExtent,
+          color: widget.theme.overlayColor,
         );
       case ScrollWheelDatePickerOverlay.line:
         return LineOverlay(
-          height: theme.itemExtent,
-          color: theme.overlayColor,
+          height: widget.theme.itemExtent,
+          color: widget.theme.overlayColor,
         );
       default:
         return const SizedBox.shrink();
@@ -122,21 +167,19 @@ class ScrollWheelDatePicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _dateController.changeMonthFormat(format: theme.monthFormat);
-
     return Stack(
       alignment: Alignment.center,
       children: [
         _overlay(),
         SizedBox(
-          height: theme.wheelPickerHeight,
+          height: widget.theme.wheelPickerHeight,
           child: ShaderMask(
             shaderCallback: (bounds) {
-              return const LinearGradient(
-                colors: [Colors.black, Colors.transparent, Colors.transparent, Colors.black],
+              return LinearGradient(
+                colors: widget.theme.fadeEdges ? [Colors.black, Colors.transparent, Colors.transparent, Colors.black] : [Colors.transparent],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                stops: [0.0, 0.08, 0.92, 1.0],
+                stops: widget.theme.fadeEdges ? [0.0, 0.08, 0.92, 1.0] : [0.0],
               ).createShader(bounds);
             },
             blendMode: BlendMode.dstOut,
@@ -151,9 +194,9 @@ class ScrollWheelDatePicker extends StatelessWidget {
                       controller: _dateController.dayController,
                       controllerItemChanged: (value) {
                         _dateController.changeDay(day: value);
-                        onSelectedItemChanged?.call(_dateController.dateTime);
+                        widget.onSelectedItemChanged?.call(_dateController.dateTime);
                       },
-                      looping: loopDays,
+                      looping: widget.loopDays,
                     ),
                   ),
                 ),
@@ -164,9 +207,9 @@ class ScrollWheelDatePicker extends StatelessWidget {
                     controller: _dateController.monthController,
                     controllerItemChanged: (value) {
                       _dateController.changeMonth(month: value);
-                      onSelectedItemChanged?.call(_dateController.dateTime);
+                      widget.onSelectedItemChanged?.call(_dateController.dateTime);
                     },
-                    looping: loopMonths,
+                    looping: widget.loopMonths,
                   ),
                 ),
 
@@ -176,16 +219,16 @@ class ScrollWheelDatePicker extends StatelessWidget {
                     controller: _dateController.yearController,
                     controllerItemChanged: (value) {
                       _dateController.changeYear(year: value);
-                      onSelectedItemChanged?.call(_dateController.dateTime);
+                      widget.onSelectedItemChanged?.call(_dateController.dateTime);
                     },
-                    looping: loopYears,
+                    looping: widget.loopYears,
                   ),
                 ),
               ],
             ),
           ),
         ),
-        theme is FlatDatePickerTheme
+        widget.theme is FlatDatePickerTheme
             ? IgnorePointer(
                 child: SizedBox(
                   height: defaultWheelPickerHeight,
@@ -194,8 +237,8 @@ class ScrollWheelDatePicker extends StatelessWidget {
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: (theme as FlatDatePickerTheme).backgroundColor.withOpacity(
-                                  1.0 - theme.overAndUnderCenterOpacity.clamp(0.0, 1.0),
+                            color: (widget.theme as FlatDatePickerTheme).backgroundColor.withOpacity(
+                                  1.0 - widget.theme.overAndUnderCenterOpacity.clamp(0.0, 1.0),
                                 ),
                           ),
                         ),
@@ -204,8 +247,8 @@ class ScrollWheelDatePicker extends StatelessWidget {
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: (theme as FlatDatePickerTheme).backgroundColor.withOpacity(
-                                  1.0 - theme.overAndUnderCenterOpacity.clamp(0.0, 1.0),
+                            color: (widget.theme as FlatDatePickerTheme).backgroundColor.withOpacity(
+                                  1.0 - widget.theme.overAndUnderCenterOpacity.clamp(0.0, 1.0),
                                 ),
                           ),
                         ),

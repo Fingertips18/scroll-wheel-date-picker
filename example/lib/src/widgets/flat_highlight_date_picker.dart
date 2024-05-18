@@ -27,6 +27,7 @@ class FlatHighlightDatePicker extends StatelessWidget {
             theme: FlatDatePickerTheme(
               backgroundColor: Colors.grey[900]!,
               overlay: ScrollWheelDatePickerOverlay.highlight,
+              itemTextStyle: defaultItemTextStyle,
               monthFormat: MonthFormat.threeLetters,
             ),
           ),

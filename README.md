@@ -9,7 +9,7 @@ This package supports a wheel-type date-picker that has two scroll types: [Curve
 
 ## Features
 
-`WheelDatePicker` uses `ListWheelScrollView` for the `CurveScrollWheel` underneath. However, some features were added and modified in order to have the same functionality but without the curve perspective in `FlatScrollWheel`.
+`ScrollWheelDatePicker` uses `ListWheelScrollView` for the `CurveScrollWheel` underneath. However, some features were added and modified in order to have the same functionality but without the curve perspective in `FlatScrollWheel`.
 
 #### Centered Selected Item
 

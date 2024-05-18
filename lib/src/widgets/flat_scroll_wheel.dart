@@ -28,7 +28,7 @@ class FlatScrollWheel extends StatefulWidget {
     this.onSelectedItemChanged,
     required this.looping,
     required this.itemExtent,
-    required this.textStyle,
+    this.textStyle,
     required this.listenAfterAnimation,
   });
 
@@ -48,7 +48,7 @@ class FlatScrollWheel extends StatefulWidget {
   final double itemExtent;
 
   /// Text style of the items in the [FlatScrollWheel].
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   /// Whether to call the [onSelectedItemChanged] when the scroll wheel animation is completed. Defaults to `true`.
   final bool listenAfterAnimation;
@@ -81,12 +81,12 @@ class _FlatScrollWheelState extends State<FlatScrollWheel> {
   void didUpdateWidget(covariant FlatScrollWheel oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    if (oldWidget.selectedIndex != widget.selectedIndex) {
+    if (oldWidget.items.length != widget.items.length || oldWidget.selectedIndex != widget.selectedIndex) {
       _controller.jumpToItem(widget.selectedIndex);
     }
 
     if (oldWidget.listenAfterAnimation != widget.listenAfterAnimation && widget.listenAfterAnimation) {
-      _controller.removeListener(() {});
+      _controller.position.isScrollingNotifier.removeListener(() {});
       _controller.position.isScrollingNotifier.addListener(() {
         if (!_controller.position.isScrollingNotifier.value) {
           widget.onSelectedItemChanged?.call(_controller.selectedItem % widget.items.length);

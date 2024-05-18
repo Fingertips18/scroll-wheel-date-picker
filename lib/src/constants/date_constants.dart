@@ -31,7 +31,7 @@ enum MonthFormat {
 }
 
 /// Default value of [DateController]'s start date.
-const String startDate = "1900-01-01 00:00:00";
+const String defaultStartDate = "1900-01-01 00:00:00";
 
 /// Default value of [DateController]'s last date.
-const String lastDate = "2100-12-31 23:59:59";
+const String defaultLastDate = "2100-12-31 23:59:59";

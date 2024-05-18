@@ -11,14 +11,14 @@ class ScrollItem extends StatelessWidget {
   const ScrollItem({
     super.key,
     required this.label,
-    required this.textStyle,
+    this.textStyle,
   });
 
   /// Label of the [ScrollWheelDatePicker] item.
   final String label;
 
   /// Text style of the [ScrollWheelDatePicker] item.
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {

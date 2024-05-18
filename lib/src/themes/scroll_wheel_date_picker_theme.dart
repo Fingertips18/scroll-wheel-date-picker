@@ -25,14 +25,17 @@ abstract class ScrollWheelDatePickerTheme {
   /// [overlay] Apply selected item's center overlay. Defaults to [ScrollWheelDatePickerOverlay.holo].
   ///
   /// [overlayColor] Selected item's center design color.
+  ///
+  /// [fadeEdges] Apply vertical faded-edges to smoothly transition overlapping items. Defaults to `true`.
   ScrollWheelDatePickerTheme({
     this.wheelPickerHeight = defaultWheelPickerHeight,
     this.itemExtent = defaultItemExtent,
     this.overAndUnderCenterOpacity = defaultOpacity,
     this.monthFormat = MonthFormat.full,
-    this.itemTextStyle = defaultItemTextStyle,
+    this.itemTextStyle,
     this.overlay = ScrollWheelDatePickerOverlay.holo,
     this.overlayColor,
+    this.fadeEdges = true,
   });
 
   /// Actual height of the [ScrollWheelDatePicker] widget. Defaults to [defaultWheelPickerHeight].
@@ -54,7 +57,7 @@ abstract class ScrollWheelDatePickerTheme {
   final MonthFormat monthFormat;
 
   /// Text style of the items in the [ScrollWheelDatePicker]. Defaults to [defaultItemTextStyle].
-  final TextStyle itemTextStyle;
+  final TextStyle? itemTextStyle;
 
   /// Apply selected item's center overlay. Defaults to [ScrollWheelDatePickerOverlay.holo].
   final ScrollWheelDatePickerOverlay overlay;
@@ -67,4 +70,7 @@ abstract class ScrollWheelDatePickerTheme {
   ///
   /// If overlay is [ScrollWheelDatePickerOverlay.line] then this defaults to [Colors.white].
   final Color? overlayColor;
+
+  /// Apply vertical faded-edges to smoothly transition overlapping items. Defaults to `true`.
+  final bool fadeEdges;
 }

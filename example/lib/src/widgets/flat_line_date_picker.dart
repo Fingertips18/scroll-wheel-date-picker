@@ -27,6 +27,7 @@ class FlatLineDatePicker extends StatelessWidget {
             theme: FlatDatePickerTheme(
               backgroundColor: Colors.black,
               overlay: ScrollWheelDatePickerOverlay.line,
+              itemTextStyle: defaultItemTextStyle,
               monthFormat: MonthFormat.twoLetters,
               overlayColor: Colors.white,
               overAndUnderCenterOpacity: 0.2,

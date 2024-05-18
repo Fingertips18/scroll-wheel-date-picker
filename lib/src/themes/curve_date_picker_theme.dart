@@ -17,6 +17,8 @@ class CurveDatePickerTheme extends ScrollWheelDatePickerTheme {
   ///
   /// [overlayColor] Selected item's center design color. Defaults to [Colors.black].
   ///
+  /// [fadeEdges] Apply vertical faded-edges to smoothly transition overlapping items. Defaults to `true`.
+  ///
   /// [diameterRatio] A curve ratio of the [ScrollWheelDatePicker] in the main axis. Defaults to [defaultDiameterRatio]. Must be a positive number.
   CurveDatePickerTheme({
     super.wheelPickerHeight,
@@ -27,6 +29,7 @@ class CurveDatePickerTheme extends ScrollWheelDatePickerTheme {
     super.itemTextStyle,
     super.overlay,
     super.overlayColor,
+    super.fadeEdges,
   });
 
   /// A curve ratio of the [ScrollWheelDatePicker] in the main axis. Defaults to [defaultDiameterRatio].
