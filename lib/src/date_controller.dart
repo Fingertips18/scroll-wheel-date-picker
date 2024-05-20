@@ -140,12 +140,18 @@ class DateController with ChangeNotifier {
   void changeMonth({required int month}) {
     _monthController = _monthController.copyWith(selectedIndex: month);
 
+    // Check if the current month and year is equal to the start date's month and year.
+    // If so, change `_startDay` to the start date's day.
+    // Otherwise, make it null.
     if (month == _startDate.month - 1 && _dateTime.year == _startDate.year) {
       _startDay = _startDate.day - 1;
     } else {
       _startDay = null;
     }
 
+    // Check if the current month and year is equal to the last date's month and year.
+    // If so, change `_lastDay` to the last date's day.
+    // Otherwise, make it null.
     if (month == _lastDate.month - 1 && _dateTime.year == _lastDate.year) {
       _lastDay = _lastDate.day;
     } else {
@@ -168,8 +174,15 @@ class DateController with ChangeNotifier {
 
     year = int.parse(_yearController.items[year]);
 
+    // Check if the current year is equal to the start date's year.
+    // If so, set the `_startMonth` to the start date's month.
+    // Otherwise, make both `_startMonth` and `_startDay` null.
     if (year == _startDate.year) {
       _startMonth = _startDate.month - 1;
+
+      // Check if the current month is equal to the start date's month.
+      // If so, set the `_startDay` to the start date's day.
+      // Otherwise, make it null.
       if (_dateTime.month == _startDate.month) {
         _startDay = _startDate.day - 1;
       } else {
@@ -180,8 +193,15 @@ class DateController with ChangeNotifier {
       _startDay = null;
     }
 
+    // Check if the current year is equal to the last date's year.
+    // If so, set the `_lastMonth` to the last date's month.
+    // Otherwise, make both `_lastMonth` and `_lastDay` null.
     if (year == _lastDate.year) {
       _lastMonth = _lastDate.month;
+
+      // Check if the current month is equal to the last date's month.
+      // If so, set the `_lastDay` to the last date's day.
+      // Otherwise, make it null.
       if (_dateTime.month == _lastDate.month) {
         _lastDay = _lastDate.day;
       } else {

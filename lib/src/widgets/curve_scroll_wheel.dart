@@ -113,6 +113,7 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
         _controller.position.isScrollingNotifier.addListener(() => _handleOffset(_startOffsets));
       }
 
+      // If `lastOffset` is specified, listen on item changed and animate towards the nearest item that is not part of the offset items.
       if (widget.lastOffset != null) {
         _controller.position.isScrollingNotifier.addListener(() => _handleOffset(_lastOffsets));
       }
@@ -185,11 +186,11 @@ class _CurveScrollWheelState extends State<CurveScrollWheel> {
     // Not do anything if it is scrolling.
     if (_controller.position.isScrollingNotifier.value) return;
 
+    // Check whether the current selected item is in the `startOffsets` or `lastOffsets`. Return the value if its true and -1 if not.
+    final value = offsets.firstWhere((i) => _controller.selectedItem % widget.items.length == i, orElse: () => -1);
+
     // Wait for 800 milliseconds before continuing.
     await Future.delayed(const Duration(milliseconds: 800));
-
-    // Check whether the current selected item is in the `startOffsets` or `lastOffsets`. Return the value if its true and -1 if not.
-    final value = offsets.firstWhere((i) => _controller.selectedItem % 100 == i, orElse: () => -1);
 
     // If it is part of the `startOffsets` or `lastOffsets`, then proceed and not do anything otherwise.
     if (value != -1) {

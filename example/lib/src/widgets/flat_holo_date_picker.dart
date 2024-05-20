@@ -24,6 +24,7 @@ class FlatHoloDatePicker extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: ScrollWheelDatePicker(
+            startDate: DateTime(2024, 5, 18),
             theme: FlatDatePickerTheme(
               backgroundColor: Colors.white,
               overlay: ScrollWheelDatePickerOverlay.holo,
