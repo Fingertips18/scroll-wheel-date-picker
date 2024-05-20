@@ -27,6 +27,7 @@ class ScrollWheelDatePicker extends StatefulWidget {
     this.onSelectedItemChanged,
     required this.theme,
     this.listenAfterAnimation = true,
+    this.scrollBehavior,
   });
 
   /// The initial date for the [ScrollWheelDatePicker]. Defaults to [DateTime.now].
@@ -62,12 +63,15 @@ class ScrollWheelDatePicker extends StatefulWidget {
   /// Whether to call the [onSelectedItemChanged] when the scroll wheel animation is completed. Defaults to `true`.
   final bool listenAfterAnimation;
 
+  /// Describes how [Scrollable] widgets should behave.
+  final ScrollBehavior? scrollBehavior;
+
   @override
   State<ScrollWheelDatePicker> createState() => _ScrollWheelDatePickerState();
 }
 
 class _ScrollWheelDatePickerState extends State<ScrollWheelDatePicker> {
-  /// Manages the initialization and changes of the [ScrollWheelDatePicker].
+  /// Manages the initialization and changes of the days, months and years [ScrollWheelDatePicker].
   late final DateController _dateController;
 
   @override
@@ -90,15 +94,11 @@ class _ScrollWheelDatePickerState extends State<ScrollWheelDatePicker> {
     }
 
     if (oldWidget.startDate != widget.startDate) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _dateController.changeStartDate(widget.startDate ?? DateTime.parse(defaultStartDate));
-      });
+      _dateController.changeStartDate(widget.startDate ?? DateTime.parse(defaultStartDate));
     }
 
     if (oldWidget.lastDate != widget.lastDate) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _dateController.changeLastDate(widget.lastDate ?? DateTime.parse(defaultLastDate));
-      });
+      _dateController.changeLastDate(widget.lastDate ?? DateTime.parse(defaultLastDate));
     }
 
     if (oldWidget.theme.monthFormat != widget.theme.monthFormat) {
@@ -118,6 +118,8 @@ class _ScrollWheelDatePickerState extends State<ScrollWheelDatePicker> {
     required IDateController controller,
     Function(int value)? controllerItemChanged,
     required bool looping,
+    int? startOffset,
+    int? lastOffset,
   }) {
     return widget.theme is CurveDatePickerTheme
         ? CurveScrollWheel(
@@ -130,6 +132,9 @@ class _ScrollWheelDatePickerState extends State<ScrollWheelDatePicker> {
             overAndUnderCenterOpacity: widget.theme.overAndUnderCenterOpacity,
             textStyle: widget.theme.itemTextStyle,
             listenAfterAnimation: widget.listenAfterAnimation,
+            scrollBehavior: widget.scrollBehavior,
+            startOffset: startOffset,
+            lastOffset: lastOffset,
           )
         : FlatScrollWheel(
             items: controller.items,
@@ -139,6 +144,9 @@ class _ScrollWheelDatePickerState extends State<ScrollWheelDatePicker> {
             itemExtent: widget.theme.itemExtent,
             textStyle: widget.theme.itemTextStyle,
             listenAfterAnimation: widget.listenAfterAnimation,
+            scrollBehavior: widget.scrollBehavior,
+            startOffset: startOffset,
+            lastOffset: lastOffset,
           );
   }
 
@@ -190,26 +198,37 @@ class _ScrollWheelDatePickerState extends State<ScrollWheelDatePicker> {
                 Expanded(
                   child: ListenableBuilder(
                     listenable: _dateController,
-                    builder: (_, __) => _scrollWidget(
-                      controller: _dateController.dayController,
-                      controllerItemChanged: (value) {
-                        _dateController.changeDay(day: value);
-                        widget.onSelectedItemChanged?.call(_dateController.dateTime);
-                      },
-                      looping: widget.loopDays,
-                    ),
+                    builder: (_, __) {
+                      return _scrollWidget(
+                        controller: _dateController.dayController,
+                        controllerItemChanged: (value) {
+                          _dateController.changeDay(day: value);
+                          widget.onSelectedItemChanged?.call(_dateController.dateTime);
+                        },
+                        looping: widget.loopDays,
+                        startOffset: _dateController.startDay,
+                        lastOffset: _dateController.lastDay,
+                      );
+                    },
                   ),
                 ),
 
                 // Months
                 Expanded(
-                  child: _scrollWidget(
-                    controller: _dateController.monthController,
-                    controllerItemChanged: (value) {
-                      _dateController.changeMonth(month: value);
-                      widget.onSelectedItemChanged?.call(_dateController.dateTime);
+                  child: ListenableBuilder(
+                    listenable: _dateController,
+                    builder: (_, __) {
+                      return _scrollWidget(
+                        controller: _dateController.monthController,
+                        controllerItemChanged: (value) {
+                          _dateController.changeMonth(month: value);
+                          widget.onSelectedItemChanged?.call(_dateController.dateTime);
+                        },
+                        looping: widget.loopMonths,
+                        startOffset: _dateController.startMonth,
+                        lastOffset: _dateController.lastMonth,
+                      );
                     },
-                    looping: widget.loopMonths,
                   ),
                 ),
 

@@ -14,41 +14,40 @@ class DateController with ChangeNotifier {
     DateTime? lastDate,
   }) {
     if (startDate != null && lastDate != null) {
-      assert((lastDate.year - startDate.year) > 2, "The years between [startDate] and [lastDate] must be greater than or equal to 2.");
-      assert(startDate.isBefore(lastDate), "[startDate] must be before `[lastDate]`");
-      assert(lastDate.isAfter(startDate), "[lastDate] must be before `[startDate]`");
+      assert(startDate.isBefore(lastDate), "Start date must be before last date.");
+      assert(lastDate.isAfter(startDate), "Last date must be after start date.");
     }
 
     if (startDate != null && lastDate == null) {
-      assert(startDate.isBefore(DateTime.parse(defaultLastDate)), "[startDate] must be before `[defaultLastDate]`");
+      assert(startDate.isBefore(DateTime.parse(defaultLastDate)), "Start date must be before default last date.");
     }
 
     if (startDate == null && lastDate != null) {
-      assert(lastDate.isAfter(DateTime.parse(defaultStartDate)), "[lastDate] must be before `[defaultStartDate]`");
+      assert(lastDate.isAfter(DateTime.parse(defaultStartDate)), "Last date must be before default last date.");
     }
 
     if (startDate != null && initialDate != null) {
-      assert(initialDate.isAfter(startDate), "[initialDate] must be after the provided [startDate].");
+      assert(initialDate.isAfter(startDate), "Initial date must be after the provided start date.");
     }
 
     if (startDate == null && initialDate != null) {
-      assert(initialDate.isAfter(DateTime.parse(defaultStartDate)), "[initialDate] must be after the default [startDate].");
+      assert(initialDate.isAfter(DateTime.parse(defaultStartDate)), "Initial date must be after the default start date.");
     }
 
     if (startDate != null && initialDate == null) {
-      assert(DateTime.now().isAfter(startDate), "[startDate] must be before the [initialDate] or [DateTime.now()]");
+      assert(DateTime.now().isAfter(startDate), "Start date must be before the initial date or `DateTime.now()`.");
     }
 
     if (lastDate != null && initialDate != null) {
-      assert(initialDate.isBefore(lastDate), "[initialDate] must be before the provided [lastDate].");
+      assert(initialDate.isBefore(lastDate), "Initial date must be before the provided last date.");
     }
 
     if (lastDate == null && initialDate != null) {
-      assert(initialDate.isBefore(DateTime.parse(defaultLastDate)), "[initialDate] must be before the default [lastDate].");
+      assert(initialDate.isBefore(DateTime.parse(defaultLastDate)), "Initial date must be before the default last date.");
     }
 
     if (lastDate != null && initialDate == null) {
-      assert(DateTime.now().isBefore(lastDate), "[lastDate] must be after the [initialDate] or [DateTime.now()]");
+      assert(DateTime.now().isBefore(lastDate), "Last date must be after the initial date or `DateTime.now()`.");
     }
 
     _initialDate = initialDate ?? DateTime.now();
@@ -56,13 +55,16 @@ class DateController with ChangeNotifier {
     _lastDate = lastDate ?? DateTime.parse(defaultLastDate);
 
     _dayController = _DayController(
-        selectedIndex: initialDate != null ? initialDate.day - 1 : null,
-        numberOfDays: _getNumberOfDays(
-          year: initialDate?.year ?? DateTime.now().year,
-          month: initialDate?.month ?? DateTime.now().month,
-        ));
+      selectedIndex: initialDate != null ? initialDate.day - 1 : null,
+      numberOfDays: _getNumberOfDays(
+        year: initialDate?.year ?? DateTime.now().year,
+        month: initialDate?.month ?? DateTime.now().month,
+      ),
+    );
 
-    _monthController = _MonthController(selectedIndex: initialDate != null ? initialDate.month - 1 : null);
+    _monthController = _MonthController(
+      selectedIndex: initialDate != null ? initialDate.month - 1 : null,
+    );
 
     _yearController = _YearController(
       initialYear: initialDate?.year,
@@ -75,8 +77,25 @@ class DateController with ChangeNotifier {
       initialDate?.month ?? DateTime.now().month,
       initialDate?.day ?? DateTime.now().day,
     );
+
+    if (_dateTime.year == _startDate.year) {
+      _startMonth = _startDate.month - 1;
+    }
+
+    if (_dateTime.year == _lastDate.year) {
+      _lastMonth = _lastDate.month;
+    }
+
+    if (_dateTime.month - 1 == _startDate.month - 1) {
+      _startDay = _startDate.day - 1;
+    }
+
+    if (_dateTime.month == _lastDate.month) {
+      _lastDay = _lastDate.day;
+    }
   }
 
+  /// Responsible for handling the days, months and years.
   late _DayController _dayController;
   late _MonthController _monthController;
   late _YearController _yearController;
@@ -84,14 +103,31 @@ class DateController with ChangeNotifier {
   /// Returns a [DateTime] value when the [onSelectedItemChanged] of the [ScrollWheelDatePicker] is used.
   late DateTime _dateTime;
 
+  /// Track the [initialDate], [startDate] and [lastDate] whenever the [DateController] is initialized or changed.
   late DateTime _initialDate;
   late DateTime _startDate;
   late DateTime _lastDate;
+
+  /// Sets the starting month of the month items selection.
+  int? _startMonth;
+
+  /// Sets the last month of the month items selection.
+  int? _lastMonth;
+
+  /// Sets the starting day of the day items selection.
+  int? _startDay;
+
+  /// Sets the last day of the day items selection.
+  int? _lastDay;
 
   IDateController get dayController => _dayController;
   IDateController get monthController => _monthController;
   IDateController get yearController => _yearController;
   DateTime get dateTime => _dateTime;
+  int? get startMonth => _startMonth;
+  int? get lastMonth => _lastMonth;
+  int? get startDay => _startDay;
+  int? get lastDay => _lastDay;
 
   /// Called when the selected item of the days [CurveScrollWheel] or [FlatScrollWheel] changed.
   void changeDay({required int day}) {
@@ -103,6 +139,18 @@ class DateController with ChangeNotifier {
   /// Called when the selected item of the months [CurveScrollWheel] or [FlatScrollWheel] changed.
   void changeMonth({required int month}) {
     _monthController = _monthController.copyWith(selectedIndex: month);
+
+    if (month == _startDate.month - 1 && _dateTime.year == _startDate.year) {
+      _startDay = _startDate.day - 1;
+    } else {
+      _startDay = null;
+    }
+
+    if (month == _lastDate.month - 1 && _dateTime.year == _lastDate.year) {
+      _lastDay = _lastDate.day;
+    } else {
+      _lastDay = null;
+    }
 
     _updateNumberOfDays();
 
@@ -118,47 +166,35 @@ class DateController with ChangeNotifier {
   void changeYear({required int year}) {
     _yearController = _yearController.copyWith(selectedIndex: year);
 
+    year = int.parse(_yearController.items[year]);
+
+    if (year == _startDate.year) {
+      _startMonth = _startDate.month - 1;
+      if (_dateTime.month == _startDate.month) {
+        _startDay = _startDate.day - 1;
+      } else {
+        _startDay = null;
+      }
+    } else {
+      _startMonth = null;
+      _startDay = null;
+    }
+
+    if (year == _lastDate.year) {
+      _lastMonth = _lastDate.month;
+      if (_dateTime.month == _lastDate.month) {
+        _lastDay = _lastDate.day;
+      } else {
+        _lastDay = null;
+      }
+    } else {
+      _lastMonth = null;
+      _lastDay = null;
+    }
+
     _updateNumberOfDays();
 
-    _dateTime = _dateTime.copyWith(year: int.parse(_yearController.items[year]));
-  }
-
-  /// Called when the [initialDate] of the [ScrollWheelDatePicker] changed.
-  void changeInitialDate(DateTime initialDate) {
-    assert(initialDate.isAfter(_startDate), "[initialDate] must be after the [startDate]");
-    assert(initialDate.isBefore(_lastDate), "[initialDate] must be before the [lastDate]");
-
-    _initialDate = initialDate;
-
-    _dayController = _dayController.copyWith(
-      selectedIndex: initialDate.day - 1,
-      numberOfDays: _getNumberOfDays(
-        year: initialDate.year,
-        month: initialDate.month,
-      ),
-    );
-    _monthController = _monthController.copyWith(selectedIndex: initialDate.month - 1);
-    _yearController = _yearController.copyWith(initialYear: initialDate.year);
-  }
-
-  /// Called when the [startDate] of the [ScrollWheelDatePicker] changed.
-  void changeStartDate(DateTime startDate) {
-    assert(startDate.isBefore(_lastDate), "[startDate] must be before the [lastDate]");
-    assert(startDate.isBefore(_initialDate), "[startDate] must be before the [initialDate]");
-
-    _startDate = startDate;
-
-    _yearController = _yearController.copyWith(startYear: startDate.year);
-  }
-
-  /// Called when the [lastDate] of the [ScrollWheelDatePicker] changed.
-  void changeLastDate(DateTime lastDate) {
-    assert(lastDate.isAfter(_startDate), "[lastDate] must be after the [startDate]");
-    assert(lastDate.isAfter(_initialDate), "[lastDate] must be after the [initialDate]");
-
-    _lastDate = lastDate;
-
-    _yearController = _yearController.copyWith(lastYear: lastDate.year);
+    _dateTime = _dateTime.copyWith(year: year);
   }
 
   /// Handles the change of the total number of days base on the selected month.
@@ -175,6 +211,50 @@ class DateController with ChangeNotifier {
     _dayController = _dayController.copyWith(selectedIndex: selectedIndex, numberOfDays: numberOfDays);
 
     notifyListeners();
+  }
+
+  /// Called when the [initialDate] of the [ScrollWheelDatePicker] changed.
+  void changeInitialDate(DateTime initialDate) {
+    assert(initialDate.isAfter(_startDate), "Initial date must be after the start date.");
+    assert(initialDate.isBefore(_lastDate), "Initial date must be before the last date.");
+
+    _initialDate = initialDate;
+
+    _dayController = _dayController.copyWith(
+      selectedIndex: initialDate.day - 1,
+      numberOfDays: _getNumberOfDays(
+        year: initialDate.year,
+        month: initialDate.month,
+      ),
+    );
+    _monthController = _monthController.copyWith(selectedIndex: initialDate.month - 1);
+    _yearController = _yearController.copyWith(initialYear: initialDate.year);
+  }
+
+  /// Called when the [startDate] of the [ScrollWheelDatePicker] changed.
+  void changeStartDate(DateTime startDate) {
+    assert(startDate.isBefore(_lastDate), "Start date must be before the last date.");
+    assert(startDate.isBefore(_initialDate), "Start date must be before the initial date.");
+
+    _startDate = startDate;
+
+    if (_dateTime.year == startDate.year) {
+      _startMonth = _dateTime.month - 1;
+    } else {
+      _startMonth = null;
+    }
+
+    _yearController = _yearController.copyWith(startYear: startDate.year);
+  }
+
+  /// Called when the [lastDate] of the [ScrollWheelDatePicker] changed.
+  void changeLastDate(DateTime lastDate) {
+    assert(lastDate.isAfter(_startDate), "Last date must be after the start date.");
+    assert(lastDate.isAfter(_initialDate), "Last date must be after the initial date.");
+
+    _lastDate = lastDate;
+
+    _yearController = _yearController.copyWith(lastYear: lastDate.year);
   }
 }
 
@@ -260,7 +340,7 @@ class _MonthController implements IDateController {
     return _MonthController._(
       monthFormat: format,
       selectedIndex: selectedIndex ?? DateTime.now().month - 1,
-      months: _generateMonths(format),
+      months: _generateMonths(monthFormat: format),
     );
   }
 
@@ -329,11 +409,11 @@ class _YearController implements IDateController {
     if (initialYear != null) {
       selectedIndex = generatedYears.indexOf(initialYear.toString());
     } else {
-      selectedIndex = generatedYears.indexOf(DateTime.now().year.toString());
+      selectedIndex = selectedIndex;
     }
 
     return _YearController._(
-      selectedIndex: selectedIndex,
+      selectedIndex: selectedIndex ?? generatedYears.indexOf(DateTime.now().year.toString()),
       startYear: start,
       lastYear: last,
       years: generatedYears,
@@ -376,7 +456,11 @@ int _getNumberOfDays({required int year, required int month}) {
 
 /// Responsible for creating the list of daays in [String] type.
 ///
-/// Requires a [numberOfDays] to determine the total number of days to generate `from 1 to total number of days`.
+/// Requires [numberOfDays] to determine the total number of days to generate `from 1 to total number of days`.
+///
+/// If [startDay] is specified, it will be generate a total number of days starting from the given [startDay].
+///
+/// If [lastDay] is specified, it will be generate a total number of days ending with the given [lastDay].
 List<String> _generateDays({required int numberOfDays}) {
   return List.generate(numberOfDays, (i) => (i + 1).toString());
 }
@@ -390,7 +474,11 @@ List<String> _generateDays({required int numberOfDays}) {
 /// [MonthFormat.threeLetters] - Returns the three letters abbreviation name of the months.
 ///
 /// [MonthFormat.twoLetters] - Returns the two letter abbreviation name of the months.
-List<String> _generateMonths(MonthFormat monthFormat) {
+///
+/// If [startMonth] is specified, it will generate the list of months starting from the given [startMonth].
+///
+/// If [lastMonth] is specified, it will generate the list of months ending with the given [lastMonth].
+List<String> _generateMonths({required MonthFormat monthFormat}) {
   switch (monthFormat) {
     case MonthFormat.threeLetters:
       return List.generate(Month.values.length, (i) => _capitalize(Month.values[i].threeAbv));
@@ -415,7 +503,7 @@ String _capitalize(String s) {
   return "${s[0].toUpperCase()}${s.substring(1).toLowerCase()}";
 }
 
-/// An abstract class for the [_DayController], [_MonthController] & [_YearController].
+/// An abstract class for the [_DayController], [_MonthController] and [_YearController].
 abstract interface class IDateController {
   IDateController copyWith();
   int get selectedIndex;
