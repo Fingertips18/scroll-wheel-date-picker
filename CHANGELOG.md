@@ -1,7 +1,11 @@
+## 0.0.2+1
+
+- Fix README.md
+
 ## 0.0.2
 
-- Fix inital date not working or updating
-- Fix the start and last date; days and months are not working
+- Fix inital date
+- Fix the start and last date
 - Detect offset items
 - Show or hide vertical fading
 

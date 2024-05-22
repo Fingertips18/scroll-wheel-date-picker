@@ -25,7 +25,7 @@ It allows you to select what type of month format you want to display. The avail
 
 #### Faded Vertical Edges
 
-It adds fade on top and bottom to create a smooth disapearance effect when the items are beyond the viewport.
+It adds fade on top and bottom to create a smooth disapearance effect when the items are beyond the viewport. Defaults to `true`.
 
 #### Listen On Item Changes After Animation Completed
 
@@ -61,7 +61,7 @@ or
 
 ```yaml
 dependencies:
-  scroll_wheel_date_picker: ^0.0.1
+  scroll_wheel_date_picker: ^0.0.2+1
 ```
 
 Then import the package.
@@ -74,14 +74,14 @@ And use like this...
 
 ```dart
 ScrollWheelDatePicker(
-  theme: CurveDatePickerTheme(
-    wheelPickerHeight: 200.0,
+  theme: FlatDatePickerTheme(
+    backgroundColor: Colors.white,
     overlay: ScrollWheelDatePickerOverlay.holo,
     itemTextStyle: defaultItemTextStyle.copyWith(color: Colors.black),
     overlayColor: Colors.black,
     overAndUnderCenterOpacity: 0.2,
   ),
-)
+),
 ```
 
 ## Contributors
