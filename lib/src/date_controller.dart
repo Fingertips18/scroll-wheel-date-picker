@@ -13,43 +13,6 @@ class DateController with ChangeNotifier {
     DateTime? startDate,
     DateTime? lastDate,
   }) {
-    if (startDate != null && lastDate != null) {
-      assert(startDate.isBefore(lastDate), "Start date must be before last date.");
-      assert(lastDate.isAfter(startDate), "Last date must be after start date.");
-    }
-
-    if (startDate != null && lastDate == null) {
-      assert(startDate.isBefore(DateTime.parse(defaultLastDate)), "Start date must be before default last date.");
-    }
-
-    if (startDate == null && lastDate != null) {
-      assert(lastDate.isAfter(DateTime.parse(defaultStartDate)), "Last date must be before default last date.");
-    }
-
-    if (startDate != null && initialDate != null) {
-      assert(initialDate.isAfter(startDate), "Initial date must be after the provided start date.");
-    }
-
-    if (startDate == null && initialDate != null) {
-      assert(initialDate.isAfter(DateTime.parse(defaultStartDate)), "Initial date must be after the default start date.");
-    }
-
-    if (startDate != null && initialDate == null) {
-      assert(DateTime.now().isAfter(startDate), "Start date must be before the initial date or `DateTime.now()`.");
-    }
-
-    if (lastDate != null && initialDate != null) {
-      assert(initialDate.isBefore(lastDate), "Initial date must be before the provided last date.");
-    }
-
-    if (lastDate == null && initialDate != null) {
-      assert(initialDate.isBefore(DateTime.parse(defaultLastDate)), "Initial date must be before the default last date.");
-    }
-
-    if (lastDate != null && initialDate == null) {
-      assert(DateTime.now().isBefore(lastDate), "Last date must be after the initial date or `DateTime.now()`.");
-    }
-
     _initialDate = initialDate ?? DateTime.now();
     _startDate = startDate ?? DateTime.parse(defaultStartDate);
     _lastDate = lastDate ?? DateTime.parse(defaultLastDate);
@@ -93,6 +56,12 @@ class DateController with ChangeNotifier {
     if (_dateTime.month == _lastDate.month) {
       _lastDay = _lastDate.day;
     }
+
+    assert(_startDate.isBefore(_lastDate), "Start date must be before last date.");
+    assert(_lastDate.isAfter(_startDate), "Last date must be after start date.");
+
+    assert(_startDate.isBefore(_initialDate) || _startDate == _initialDate, "Start date must be before or equals to initial date.");
+    assert(_lastDate.isAfter(_initialDate) || _lastDate == _initialDate, "Last date must be after or equals to initial date.");
   }
 
   /// Responsible for handling the days, months and years.
@@ -104,6 +73,7 @@ class DateController with ChangeNotifier {
   late DateTime _dateTime;
 
   /// Track the [initialDate], [startDate] and [lastDate] whenever the [DateController] is initialized or changed.
+
   late DateTime _initialDate;
   late DateTime _startDate;
   late DateTime _lastDate;
@@ -235,8 +205,8 @@ class DateController with ChangeNotifier {
 
   /// Called when the [initialDate] of the [ScrollWheelDatePicker] changed.
   void changeInitialDate(DateTime initialDate) {
-    assert(initialDate.isAfter(_startDate), "Initial date must be after the start date.");
-    assert(initialDate.isBefore(_lastDate), "Initial date must be before the last date.");
+    assert(_startDate.isBefore(initialDate) || _startDate == initialDate, "Start date must be before or equals to initial date.");
+    assert(_lastDate.isAfter(initialDate) || _lastDate == initialDate, "Last date must be after or equals to initial date.");
 
     _initialDate = initialDate;
 
@@ -254,7 +224,7 @@ class DateController with ChangeNotifier {
   /// Called when the [startDate] of the [ScrollWheelDatePicker] changed.
   void changeStartDate(DateTime startDate) {
     assert(startDate.isBefore(_lastDate), "Start date must be before the last date.");
-    assert(startDate.isBefore(_initialDate), "Start date must be before the initial date.");
+    assert(startDate.isBefore(_initialDate) || startDate == _initialDate, "Start date must be before or equals to initial date.");
 
     _startDate = startDate;
 
@@ -270,7 +240,7 @@ class DateController with ChangeNotifier {
   /// Called when the [lastDate] of the [ScrollWheelDatePicker] changed.
   void changeLastDate(DateTime lastDate) {
     assert(lastDate.isAfter(_startDate), "Last date must be after the start date.");
-    assert(lastDate.isAfter(_initialDate), "Last date must be after the initial date.");
+    assert(lastDate.isAfter(_initialDate) || lastDate == _initialDate, "Last date must be after or equals to initial date.");
 
     _lastDate = lastDate;
 
